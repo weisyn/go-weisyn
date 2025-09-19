@@ -1,0 +1,22 @@
+{
+  "network_id": "WES_testnet",
+  "chain_id": 12345,
+  "genesis_accounts": [
+    {
+      "name": "Genesis-Founder",
+      "private_key": "ae009e242a7317826396eafca13e4142aca5d8adbaf438682fa4779dc6e16323",
+      "public_key": "02349cb6a770701494eb716d0b430ebcff740a354b2ceaedb4d3a2b4bad2237896",
+      "address": "CUQ3g6P5WmFN289pPn7AAhnQ3T2cZRv2BR",
+      "initial_balance": "1000000000000000000",
+      "address_type": "bitcoin_style"
+    },
+    {
+      "name": "Genesis-Investor",
+      "private_key": "e913d55e6487714c900fbfa2cc79dc6072f3da0486dcc5c4eba3555f00014598",
+      "public_key": "037b9d77205ea12eec387883262ef67e215b71901ff3d3d0d8cc49509077fa2926",
+      "address": "CWb1owGnpUaB2JoQPhohpa81Cz9aiqikZG",
+      "initial_balance": "1000000000000000000",
+      "address_type": "bitcoin_style"
+    }
+  ]
+}

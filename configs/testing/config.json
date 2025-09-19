@@ -1,0 +1,101 @@
+{
+  "_comment": "WES测试环境配置",
+  "_environment": "testing",
+  "_version": "0.0.1",
+  
+  "network": {
+    "chain_id": 20001,
+    "network_name": "WES_testnet_2024"
+  },
+  
+  "genesis": {
+    "accounts": [
+      {
+        "name": "Testnet-Account-1",
+        "private_key": "ae009e242a7317826396eafca13e4142aca5d8adbaf438682fa4779dc6e16323",
+        "address": "CUQ3g6P5WmFN289pPn7AAhnQ3T2cZRv2BR",
+        "initial_balance": "10000000000000000000"
+      },
+      {
+        "name": "Testnet-Account-2",
+        "private_key": "e913d55e6487714c900fbfa2cc79dc6072f3da0486dcc5c4eba3555f00014598",
+        "address": "CWb1owGnpUaB2JoQPhohpa81Cz9aiqikZG",
+        "initial_balance": "10000000000000000000"
+      }
+    ]
+  },
+  
+  "api": {
+    "http_enabled": true,
+    "http_port": 8080,
+    "grpc_enabled": true,
+    "grpc_port": 9090,
+    "websocket_enabled": true,
+    "websocket_port": 8081,
+    "enable_mining_api": true
+  },
+  
+  
+  "mining": {
+    "target_block_time": "15s",
+    "enable_aggregator": true,
+    "max_mining_threads": 8
+  },
+
+  "blockchain": {
+    "block": {
+      "min_block_interval": 2
+    }
+  },
+  
+  "node": {
+    "listen_addresses": [
+      "/ip4/0.0.0.0/tcp/4001",
+      "/ip6/::/tcp/4001",
+      "/ip4/0.0.0.0/udp/4001/quic-v1",
+      "/ip6/::/udp/4001/quic-v1"
+    ],
+    "host": {
+      "identity": {
+        "key_file": "./data/testing/p2p/identity.key"
+      }
+    },
+    "bootstrap_peers": [
+      "/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN",
+      "/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa",
+      "/dnsaddr/bootstrap.libp2p.io/p2p/QmbLHAnMoJPWSCR5Zhtx6BHJX9KiKNN6tpvbUcqanj75Nb",
+      "/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt",
+      "/ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
+      "/ip4/8.130.32.119/tcp/4001/p2p/QmYyQSo1c1Ym7orWxLYvCrM2EmxFTANf8wXmmE7DWjhx5N",
+      "/ip4/47.245.56.181/tcp/4001/p2p/QmZa1sAxajnQjVM8WjWXoMbmPd7NsWhfKsPkErzpm9wGkp",
+      "/ip4/47.103.15.12/tcp/4001/p2p/QmUbootABQNHKeyjHdrheq1oVzGdFZxB1oTHMZAcD5iWdH"
+    ],
+    "enable_mdns": false,
+    "enable_dht": true,
+    "enable_nat_port": true,
+    "enable_dcutr": true,
+    "enable_auto_relay": false
+  },
+  
+  
+  
+  "log": {
+    "level": "info",
+    "file_path": "./data/logs/testing.log"
+  },
+  
+  "storage": {
+    "data_path": "./data/testing"
+  },
+
+  "cli": {
+    "wallet_storage_path": "wallets",
+    "theme": "default",
+    "enable_colors": true,
+    "enable_progress": true,
+    "menu_timeout": 30,
+    "confirm_on_exit": true,
+    "auto_save_config": true
+  }
+  
+}
