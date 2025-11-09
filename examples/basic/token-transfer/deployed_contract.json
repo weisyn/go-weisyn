@@ -1,9 +1,0 @@
-{
-  "contract_address": "deployed_token_95010",
-  "token_name": "Demo Token",
-  "token_symbol": "DEMO",
-  "initial_supply": "1000000",
-  "template_used": "simple-token",
-  "deployed_at": "2025-09-01T10:50:10+08:00",
-  "wasm_file": "/Users/wesign006/goproject/online/weisyn/examples/basic/token-transfer/build/token.wasm"
-}
