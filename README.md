@@ -94,8 +94,8 @@ graph TB
         LEDGER["<b>账本层（Ledger Layer）</b><br/>记录做了什么<br/>━━━━━━━━━━━━━━━━━━<br/>• 状态管理（账户余额等）<br/>• 文件存储（合约/AI模型）<br/>• 交易历史（区块链记录）"]
     end
     
-    subgraph "共识保障（横跨各层）"
-        CONSENSUS["PoW+XOR 混合共识<br/>工作量证明 + XOR 距离选择"]
+    subgraph "共识保障"
+        CONSENSUS["PoW+XOR 混合共识<br/>工作量证明 + 距离选择"]
     end
     
     INTERACTION --> COMPUTATION
@@ -104,9 +104,9 @@ graph TB
     CONSENSUS -.保障.-> COMPUTATION
     CONSENSUS -.保障.-> LEDGER
     
-    style INTERACTION fill:#E3F2FD,stroke:#1976D2,stroke-width:3px
-    style COMPUTATION fill:#2196F3,color:#fff,stroke:#0D47A1,stroke-width:3px
-    style LEDGER fill:#4CAF50,color:#fff,stroke:#2E7D32,stroke-width:3px
+    style INTERACTION fill:#1565C0,color:#fff,stroke:#0D47A1,stroke-width:3px
+    style COMPUTATION fill:#00838F,color:#fff,stroke:#004D40,stroke-width:3px
+    style LEDGER fill:#6A1B9A,color:#fff,stroke:#4A148C,stroke-width:3px
     style CONSENSUS fill:#E91E63,color:#fff,stroke:#C2185B,stroke-width:3px
 ```
 

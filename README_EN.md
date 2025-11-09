@@ -1,4 +1,4 @@
-# WES —— Enterprise-Grade Trusted Digital Infrastructure
+# WES —— Defining the Verifiable Computing Paradigm for Blockchain
 
 <div align="center">
 
@@ -11,422 +11,454 @@ __          ________ _____  _______     ___   _
     \/  \/   |______|_____|_____/   |_|  |_| \_|
 </pre>
 
-**Enterprise-Grade Trusted Digital Infrastructure**  
-**Making enterprise data, AI models, and business logic autonomously controllable**
+**Enabling Decentralized Intelligence in the AI Era**  
+**Breaking through deterministic consensus limitations, enabling AI and other complex computations to run trustworthily on-chain**
 
-📖 **English | [中文](README.md)**
+📖 **[English](README_EN.md) | [中文](README.md)**
 
 [![Go Version](https://img.shields.io/badge/Go-1.19+-blue.svg)](https://golang.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey.svg)]()
 [![Status](https://img.shields.io/badge/Status-Public%20Beta-orange.svg)]()
 
-[Quick Start](#-quick-start) • [Core Features](#core-features) • [Usage Examples](#-usage-examples) • [Community](#-community--vision)
+[🚀 Quick Start](#-30-second-getting-started) • [💡 Core Breakthrough](#-core-capabilities) • [📖 Documentation](#-documentation-navigation)
 
 </div>
 
-## Table of Contents
+---
 
-- [📖 Project Overview](#-project-overview)
-- [🌌 In-Depth Understanding](#-in-depth-understanding)
-- [💡 Why Choose WES](#-why-choose-wes)
-- [⚡ Core Features](#core-features)
-- [🧭 Public Beta Progress & Roadmap](#-public-beta-progress--roadmap)
-- [🧪 How to Join Public Beta](#-how-to-join-public-beta)
-- [🚀 Quick Start](#-quick-start)
-- [📚 Usage Examples](#-usage-examples)
-- [🏗️ Architecture Overview](#️-architecture-overview)
-- [📋 Documentation](#-documentation)
-- [🌟 Community & Vision](#-community--vision)
-- [🤝 Contributing Guide](#-contributing-guide)
-- [📄 License](#-license)
+## 🌌 The Era's Challenge: Combining Production Relations with Productive Forces
 
-## 📖 Project Overview
+In the evolution of the digital economy, we face a fundamental contradiction:
 
-**WES (Weisyn Chain)** is a next-generation **enterprise-grade trusted digital infrastructure platform**.
+- **Blockchain defines new production relations**: Decentralized, immutable, transparent, and trustworthy
+- **AI represents new productive forces**: Intelligent, automated, efficient decision-making
+- **But they are severely disconnected**:
+  - **Traditional blockchain cannot run AI**: Deterministic consensus limitations prevent support for non-deterministic computation
+  - **AI urgently needs blockchain**: Black-box decisions cannot be traced, critical scenarios lack auditability, data ownership is unclear
 
-WES breaks through traditional blockchain storage and computing limitations, allowing enterprises' data, AI models, and business logic to run autonomously and controllably on the Weisyn Chain distributed network, while obtaining blockchain-level trust guarantees.
+This is not a technical optimization problem, but a **paradigm deficiency**.
 
-### Core Value Proposition
+### 💥 Real-World Dilemmas
 
-**🎯 For Enterprises**: Create a trusted execution environment where your business data, AI models, and logic can run autonomously under your control while leveraging blockchain's immutable trust guarantees.
+**Scenario 1: Medical AI Diagnosis Disputes**
+A hospital uses AI-assisted diagnosis, and a patient questions the diagnostic result. The hospital needs to prove that the AI used the correct model and input data, but AI decisions are black-box and cannot be traced. If the AI's reasoning process could be recorded on the blockchain, it would provide an immutable evidence chain. However, traditional blockchain cannot run AI models—because all nodes must produce the same result, while AI inference is non-deterministic.
 
-**🔒 Autonomous & Controllable**: Enterprise assets remain under your sovereignty while benefiting from decentralized network effects.
+**Scenario 2: E-commerce Order Payment Failures**
+A user places an order and payment succeeds, but inventory deduction fails, causing the order to be cancelled. The user requests a refund, but the payment system and inventory system have inconsistent data, making it impossible to determine responsibility. If the entire process could execute atomically on the blockchain, this problem would not occur. However, traditional blockchain can only handle single transactions and cannot support cross-system long transactions.
 
-**🚀 All-in-One Platform**: Smart contracts + decentralized storage + AI inference in one unified platform, eliminating complex multi-chain architectures.
+**Scenario 3: Manufacturing AI Production Scheduling System Crash**
+A factory wants to use AI to optimize production scheduling and record the decision process on-chain. However, traditional blockchain requires 50 nodes to execute repeatedly—meaning the AI model runs 50 times, the database is called 50 times, APIs are requested 50 times... The system crashes directly, and production plans cannot be executed.
 
-**Core Innovation**: Zero-Knowledge proof driven architecture enabling massive resource processing while maintaining blockchain security guarantees.
+### ❌ Architectural Defects of Traditional Blockchain
 
-## 💡 Why WES?
+```text
+Traditional Blockchain = Deterministic Consensus + Repeated Execution
 
-### The Problem with Current Blockchain Systems
+50 nodes = 50 executions = 50 database operations = 💥 System crash
+                  = 50 API calls = 💸 Cost explosion
+                  = Cannot run AI = ❌ Limited functionality
+```
 
-| Challenge | Traditional Solutions | WES Solution |
-|-----------|----------------------|---------------|
-| **Large Data Processing** | ❌ Can't handle GB-scale resources | ✅ Native support for AI models, videos, datasets |
-| **AI Integration** | ❌ Relies on external oracles | ✅ On-chain ONNX runtime for deterministic AI |
-| **Storage & Compute** | ❌ Separate systems (IPFS + blockchain) | ✅ Unified resource management (URES) |
-| **Scalability** | ❌ Global state bottleneck | ✅ Parallel processing with EUTXO model |
+**Why can't traditional blockchain run AI?**
+- ❌ **Deterministic consensus requirement**: Same input must produce same output → AI inference is non-deterministic
+- ❌ **Repeated execution limitation**: All nodes execute repeatedly → AI models are too large, computation too expensive
+- ❌ **Cannot integrate external systems**: Requires oracles to feed data → Real-time data cannot be obtained
 
-### Real-World Applications Unlocked
-
-- **🏥 Healthcare**: 2GB AI diagnostic models with patient data privacy
-- **🏦 Finance**: Real-time AI risk assessment with regulatory compliance
-- **🎨 Media**: Full-chain NFTs with embedded AI generation
-- **🎮 Gaming**: Completely on-chain games with AI-powered NPCs
-
-## ⚡️ Key Features
-
-### 🔗 **Unified Architecture**
-- **Smart Contracts**: WebAssembly VM supporting any programming language
-- **Decentralized Storage**: Native on-chain file storage (no external dependencies)
-- **AI Inference**: Built-in ONNX runtime for machine learning models
-
-### 🚀 **Enterprise Performance**
-- **High Throughput**: 10,000+ TPS with parallel EUTXO processing
-- **Compliance Ready**: Built-in regulatory controls and audit trails
-- **ZK-Powered**: Zero-knowledge proofs for private computation at scale
-
-### 🛠️ **Developer Friendly**
-- **Multi-Language Support**: Write contracts in Go, Rust, C++, or any WASM-compilable language
-- **Rich SDK**: Comprehensive tooling for rapid development
-- **Familiar APIs**: Ethereum-compatible interfaces where applicable
+**Why can't traditional blockchain support enterprise applications?**
+- ❌ **External side effects problem**: 50 nodes = 50 database operations = Database crash
+- ❌ **Atomicity limitation**: Only supports single transactions, cannot support long-transaction business processes
+- ❌ **High integration cost**: Requires large-scale transformation of traditional business systems
 
 ---
 
-## 🧭 Public Beta Progress & Roadmap
+## ✨ WES's Answer: Verifiable Computing Paradigm
 
-### 🎯 Current Public Beta Scope (Phase 1) - Blockchain Infrastructure
+Facing the architectural defects of traditional blockchain, WES provides its own answer: redefining blockchain's computing approach through the ISPC verifiable computing paradigm.
 
-**Core Functionality Validation**:
-- ⛓️ **Ledger System**: EUTXO model, balance queries, transaction records
-- 🌐 **Network Layer**: P2P node communication, block synchronization, transaction broadcasting
-- ⚙️ **Consensus Mechanism**: PoW mining, block production, difficulty adjustment
-- 💸 **Asset Transfers**: Native coin transfers, batch transfers, transaction signing
+### 🏗️ Understanding WES: Starting from the Three-Layer Classic Model
 
-**Validation Paths**:
-- 🖥️ **CLI Interaction**: Individual users, development testing, local wallet management
-- 🔗 **HTTP API**: Enterprise integration, automation scripts, third-party integration
+To understand how WES breaks through traditional blockchain limitations, we need to first understand its foundational architecture. **WES adopts a classic three-layer architecture model**:
 
-**Technology Stack Validation**:
-- Zero-knowledge proof architecture foundation
-- Parallel processing capability validation
-- Unified resource management framework
-- Multi-environment configuration embedding
-
-### 🗓️ Future Rollout Plan
+```
+Interaction Layer → Computation Layer → Ledger Layer
+```
 
 ```mermaid
 graph TB
-    subgraph "WES Public Beta Roadmap"
-        A["🎯 Phase 1: Infrastructure Beta<br/>✅ Currently Active (2025.Q3-Q4)<br/>Ledger · Network · Consensus · Transfers"] 
-        B["🔮 Phase 2: Smart Contracts Beta<br/>⏳ Expected 2026.Q1<br/>WASM Execution · Contract Deployment · Event System"]
-        C["🤖 Phase 3: AI Inference Models Beta<br/>⏳ Expected 2026.Q2<br/>ONNX Runtime · On-chain Inference · Model Management"]
-        D["💾 Phase 4: Decentralized Storage Beta<br/>⏳ Expected 2026.Q3<br/>Distributed Storage · Content Addressing · Version Control"]
+    subgraph "Three-Layer Classic Model"
+        INTERACTION["<b>Interaction Layer</b><br/>Define what to do<br/>━━━━━━━━━━━━━━━━━━<br/>• Receive user requests<br/>• Clarify input data<br/>• Define output results<br/>• Unified interaction interface"]
         
-        A --> B
-        B --> C  
-        C --> D
+        COMPUTATION["<b>Computation Layer</b><br/>Execute how to do<br/>━━━━━━━━━━━━━━━━━━<br/>ISPC Intrinsic Self-Proving Computing<br/>• Execute smart contracts/AI inference<br/>• Single execution + multi-point verification<br/>• Automatically generate verifiable proofs"]
         
-        style A fill:#e1f5fe
-        style B fill:#f3e5f5
-        style C fill:#e8f5e8
-        style D fill:#fff3e0
+        LEDGER["<b>Ledger Layer</b><br/>Record what was done<br/>━━━━━━━━━━━━━━━━━━<br/>• State management (account balances, etc.)<br/>• File storage (contracts/AI models)<br/>• Transaction history (blockchain records)"]
     end
+    
+    subgraph "Consensus Guarantee (Across All Layers)"
+        CONSENSUS["PoW+XOR Hybrid Consensus<br/>Proof of Work + XOR Distance Selection"]
+    end
+    
+    INTERACTION --> COMPUTATION
+    COMPUTATION --> LEDGER
+    CONSENSUS -.guarantees.-> INTERACTION
+    CONSENSUS -.guarantees.-> COMPUTATION
+    CONSENSUS -.guarantees.-> LEDGER
+    
+    style INTERACTION fill:#1565C0,color:#fff,stroke:#0D47A1,stroke-width:3px
+    style COMPUTATION fill:#00838F,color:#fff,stroke:#004D40,stroke-width:3px
+    style LEDGER fill:#6A1B9A,color:#fff,stroke:#4A148C,stroke-width:3px
+    style CONSENSUS fill:#E91E63,color:#fff,stroke:#C2185B,stroke-width:3px
 ```
 
-## 🧪 How to Join Public Beta
+**Layer 1: Interaction Layer**
+- **Responsibility**: Define "what to do"—receive user requests, clarify required inputs, and expected outputs
+- **Simple understanding**: Like function interfaces in programming, you tell the system what operation to execute (function name), what parameters are needed (input), and the system tells you what result will be returned (output)
 
-### 🖥️ Method 1: CLI Interactive Experience (Recommended for Individual Users)
+**Layer 2: Computation Layer**
+- **Responsibility**: Execute "how to do"—actually execute computation and generate verifiable proofs
+- **Simple understanding**: Like function implementations, execute actual business logic while automatically generating an "execution proof" that proves the computation followed the correct program
+- **Core**: **ISPC is the core innovation of this layer**, enabling AI and other complex computations to run on-chain
 
-**CLI Positioning**: Interactive experience for individual users, development testing, and local wallet management
+**Layer 3: Ledger Layer**
+- **Responsibility**: Record "what was done"—permanently save operation results to an immutable ledger
+- **Simple understanding**: Like databases and logging systems, record all operation results and history that anyone can view but cannot tamper with
+
+**Consensus Guarantee (Across All Layers)**:
+- **PoW+XOR**: Hybrid consensus mechanism ensuring security and consistency across all three layers
+
+---
+
+This three-layer model is WES's foundational architecture: all functionality is implemented based on this model, and any operation can be abstracted as "interaction definition → computation execution → ledger record".
+
+**In the second layer (Computation Layer), WES's core innovation is ISPC (Intrinsic Self-Proving Computing)**. ISPC defines a completely new computing approach that enables blockchain to truly carry AI and other complex computations.
+
+> **ISPC defines the blockchain verifiable computing paradigm**  
+> Breaking through deterministic consensus limitations, ushering in the era of verifiable computing.  
+> **Born for AI, but not limited to AI.**
+
+### 🔑 ISPC's Core Breakthrough: Single Execution + Multi-Point Verification
+
+How does ISPC break through traditional blockchain limitations? Let's understand through an analogy:
+
+**The problem with traditional approaches**:
+Imagine if 50 judges need to hear the same case, the traditional approach requires all 50 judges to personally hear it and then compare results. This is not only inefficient, but for non-deterministic computations like AI inference, it's impossible to get the same result.
+
+**ISPC's innovation**:
+Only one judge needs to hear the case, while automatically generating a "verifiable proof document" (like a notary's certificate), and the other 49 judges only need to verify whether this proof is valid, without repeating the hearing.
+
+```text
+Traditional Blockchain:
+Node A executes → Result 1
+Node B executes → Result 2    } Compare results, must be identical (deterministic consensus)
+Node C executes → Result 3
+
+WES ISPC:
+Node A executes → Result + Verifiability Proof (auto-generated)
+Node B verifies proof → ✓                      } Verify proof validity, no need for identical results (verifiability consensus)
+Node C verifies proof → ✓
+```
+
+> 💡 **What is a verifiability proof?**  
+> Like a notary's certificate, it proves "the computation result was obtained through the correct program". Anyone can verify the authenticity of this proof, but there's no need to re-execute the computation. This is a product of cryptographic technology (zero-knowledge proofs).
+
+**ISPC's breakthroughs**:
+- ✅ **Verifiability consensus**: Verify verifiability proofs, don't require identical results → Support non-deterministic computation (like AI)
+- ✅ **Single execution + multi-point verification**: Only one node executes AI inference, other nodes only verify proofs → Significantly reduce computation costs
+- ✅ **Controlled external interactions**: External system calls are controlled and witnessed → Trustworthy real-time data acquisition
+
+**What do these breakthroughs bring?**
+
+- ✅ **AI can run on-chain**: Verify proofs, don't require identical results
+- ✅ **System won't crash**: Only 1 node executes, other nodes verify
+- ✅ **User gas-free experience**: Sponsor pool mechanism, lowering usage barriers
+- ✅ **Enterprise applications truly on-chain**: Support long transactions, external integration
+
+> **Just as CUDA defined GPU general-purpose computing,**  
+> **ISPC defines blockchain verifiable computing.**
+
+> **We're not improving blockchain, we're defining a new computing paradigm**
+
+---
+
+## 📊 Three Generations of Blockchain Evolution
+
+ISPC's breakthrough makes WES the third-generation blockchain. Let's look at the evolution of blockchain:
+
+| Generation | Representative | Definition | Applications | Limitations |
+|------------|----------------|------------|--------------|-------------|
+| **First Gen** | Bitcoin | Digital Currency | Value storage, payments | ❌ Can only transfer, cannot run business logic |
+| **Second Gen** | Ethereum | Smart Contracts | DeFi, NFT, DAO | ❌ Deterministic consensus limitations, cannot support AI |
+| **Third Gen** | **WES** | **Verifiable Computing** | **AI, enterprise applications, all complex computations** | ✅ **Breakthrough deterministic consensus limitations** |
+
+**WES's paradigm breakthroughs**:
+- **Verifiability consensus**: Verify verifiability proofs, rather than requiring identical results
+- **Single execution**: Only one node executes, other nodes verify
+- **Controlled external interactions**: External system calls are controlled and witnessed, forming a verifiable closed loop
+
+What do these breakthroughs bring? Let's look at WES's core capabilities:
+
+---
+
+## 🎯 Core Capabilities
+
+### 1. 🤖 AI Native: Industry's Only On-Chain AI Support
+
+**Why is this important?**
+
+| Traditional Blockchain | WES |
+|------------------------|-----|
+| ❌ Cannot run AI (deterministic consensus limitation) | ✅ AI model inference runs on-chain |
+| ❌ AI results must be on-chain (centralization risk) | ✅ AI inference process is verifiable |
+| ❌ Requires oracles (trust bottleneck) | ✅ Native support, no intermediaries needed |
+
+**Application Scenarios**:
+- 🏥 **Medical AI**: Diagnostic decisions auditable on-chain, data stays within domain
+- 🏭 **Manufacturing**: AI production scheduling decisions transparent and traceable
+- 💼 **Financial AI**: Risk assessment, investment advice trustworthy on-chain
+
+### 2. 🏢 Enterprise Application Support: Real Business Scenarios
+
+**Core Capabilities**:
+
+- **Atomic long transactions**: Cross-system business processes execute within a single atomic boundary
+- **Zero transformation cost**: Seamless integration with existing ERP/CRM/payment systems
+- **External side effects control**: Database and API calls are controlled and witnessed
+
+**Typical Scenarios**:
+- 🛒 **E-commerce orders**: Order → Payment → Inventory → Logistics, atomic guarantee
+- 🚚 **Logistics tracking**: Order acceptance → Transport → Delivery, fully traceable
+- 🏗️ **Construction**: Multi-party collaboration, permissions managed on-chain
+
+### 3. 💰 Flexible Fee Mechanism: Lowering Usage Barriers
+
+**Fee as Incentive (Core)** - Transaction fees aggregated as miner incentives, zero-inflation model  
+**Multi-Token Payment** - Support multiple tokens for fee payment, no need to hold specific platform tokens  
+**ISPC Cost Optimization** - Single execution significantly reduces computation costs, lower fees  
+**Sponsor Pool Payment (Optional)** - Projects can choose to pay for users, achieving gas-free experience
+
+> 💡 **Note**: WES's underlying mechanism is a complete "fee as incentive" system. Users can directly pay multi-token fees; projects can also pay for users through sponsor pools, achieving a gas-free experience. This is a cost advantage brought by the ISPC architecture.
+
+---
+
+Now that we understand WES's core capabilities, let's start using it:
+
+## 🚀 30-Second Getting Started
+
+### Quick Start
 
 ```bash
-# Start CLI interactive mode
-./bin/testing --cli-only
+# 1. Clone and build
+git clone https://github.com/weisyn/weisyn.git
+cd weisyn
+make build-dev
+
+# 2. Start development environment
+./bin/development --cli-only
+
+# 3. Experience core features
+> Account Management → Wallet Management → Create Wallet
+> Mining Control → Start Mining
+> Account Management → Query Account Balance
 ```
 
-**Complete Feature Menu**:
-- 💼 **Account Management**: Create/import wallets, view balances, wallet lists (auto-read addresses)
-- 💸 **Transfer Operations**: Regular transfers, batch transfers (auto-select wallet addresses)
-- ⛏️ **Mining Control**: Start/stop mining, view status (manual input of miner address)
-- 📦 **Resource Management**: Deploy and manage blockchain resources
-- 📊 **Block Information**: View latest blocks, chain status, transaction info
-- 🔧 **System Center**: Node status, system settings
-
-**Experience Path**:
-1. Account Management → Wallet Management → Create Wallet (set password)
-2. Mining Control → Start Mining (input wallet address from step 1)
-3. Account Management → Query Account Balance (auto-select wallet)
-
-### 🔗 Method 2: API Quick Validation (Enterprise Integration)
-
-**API Positioning**: For enterprise backends, automation scripts, third-party system integration
+### API Quick Verification
 
 ```bash
 # Start API service
-./bin/testing --api-only
+./bin/development --api-only
 
-# Basic validation
-curl -s http://localhost:8080/health
-curl -s http://localhost:8080/api/v1/info
+# Get chain information
+curl http://localhost:8080/api/v1/info | jq .
+
+# Start mining
+curl -X POST http://localhost:8080/api/v1/mining/start \
+  -H 'Content-Type: application/json' \
+  -d '{"miner_address": "<your_address>"}'
 ```
 
-### 📋 Feedback & Participation
-
-- **Issue Submission**: Use the `public-beta` label, provide minimal reproduction steps
-- **Discord Discussion**: Real-time technical exchange and problem feedback
-- **System Information**: Please include OS, Go version, error logs
-
-For more deployment modes, see: [bin/README.md](bin/README.md)
+> 📖 **Complete Guide**: [Quick Start Guide](./docs/README.md) | [Application Examples](./examples/README.md)
 
 ---
 
-## 🏗️ Architecture Overview
+## 🏗️ Technical Architecture
+
+WES's technical architecture is based on the three-layer classic model, implementing the above core capabilities through four core technologies:
+
+### Four Core Technologies
 
 ```mermaid
 graph TB
-    subgraph "WES Unified Platform"
-        subgraph "Application Layer"
-            DAPPS[DApps & Services]
-        end
-        
-        subgraph "Core Services"
-            CONTRACTS[Smart Contracts<br/>WASM VM]
-            STORAGE[Decentralized Storage<br/>On-chain Files]
-            AI[AI Inference<br/>ONNX Runtime]
-        end
-        
-        subgraph "Resource Management"
-            URES[URES Unified Resource System]
-        end
-        
-        subgraph "Consensus & Network"
-            CONSENSUS[PoW + ZK Consensus]
-            P2P[P2P Network]
-        end
+    subgraph "Core Technology Layer"
+        A["🔮 ISPC<br/>Verifiable Computing Paradigm"] --> V[Third-Generation Blockchain]
+        B["⚡ EUTXO<br/>Parallel Processing"] --> V
+        C["🏗️ URES<br/>Unified Resources"] --> V
+        D["⚙️ PoW+XOR<br/>High-Performance Consensus"] --> V
     end
     
-    DAPPS --> CONTRACTS
-    DAPPS --> STORAGE
-    DAPPS --> AI
+    subgraph "Capability Layer"
+        V --> E["🤖 AI Native"]
+        V --> F["🏢 Enterprise Applications"]
+        V --> G["💰 User Gas-Free"]
+    end
     
-    CONTRACTS --> URES
-    STORAGE --> URES
-    AI --> URES
-    
-    URES --> CONSENSUS
-    CONSENSUS --> P2P
+    style A fill:#9C27B0,color:#fff
+    style V fill:#e91e63,color:#fff
+    style E fill:#4caf50,color:#fff
 ```
 
-## 🚀 Quick Start
+### Technology Stack
 
-### Prerequisites
+| Technology | Description | Value |
+|------------|-------------|-------|
+| **ISPC** | Single execution + verifiability proof verification | 🌟 **Core Differentiation**: Supports AI on-chain |
+| **EUTXO** | Eliminates global state locks, parallel processing | High performance, supports large-scale concurrency |
+| **URES** | Unified management of contracts/AI/data | Reduces complexity, seamless interoperability |
+| **PoW+XOR** | Distance-based addressing consensus | Zero configuration, microsecond-level selection |
 
-| Component | Version | Required | Purpose |
-|-----------|---------|----------|---------|
-| Go | 1.19+ | ✅ | Build from source |
-| Git | Any | ✅ | Clone repository |
-| 8GB+ RAM | - | 💡 | Recommended for mining |
-| 10GB+ Disk | - | 💡 | For blockchain data |
+> 💡 **Technical Details**: ISPC uses zero-knowledge proof (ZK Proof) technology to generate verifiability proofs, which is mature cryptographic technology. For technical personnel, see [ISPC Technical Details](./docs/components/core/ispc/README.md)
 
-### 🎯 Public Beta Quick Experience
+> 📖 **Learn More**: [System Architecture](./docs/system/architecture/README.md) | [ISPC Technical Details](./docs/components/core/ispc/README.md)
 
-```bash
-# 1. Clone and build testing environment
-git clone https://github.com/weisyn/weisyn.git
-cd weisyn
-go build -o bin/testing ./cmd/testing
+---
 
-# 2. CLI Interactive Experience (Individual Users)
-./bin/testing --cli-only
+## 🆚 Why Choose WES?
 
-# 3. API Service Mode (Enterprise Integration)  
-./bin/testing --api-only
+Now that we understand WES's technical architecture, let's see how it compares to other solutions:
 
-# 4. Full Mode (CLI + API)
-./bin/testing
+### Paradigm Innovation vs. Incremental Optimization
 
-# 5. Verify installation
-./bin/testing --version
-./bin/testing --help
-```
+| Dimension | 🌩️ Cloud Platform | ⛓️ Traditional Blockchain | 🏢 Enterprise Chain | **🚀 WES** |
+|-----------|-------------------|---------------------------|---------------------|-----------|
+| **Data Control** | ❌ Depends on service provider | ⚠️ Public chain has no privacy | ✅ Enterprise control | **✅ Autonomous + Privacy** |
+| **Business Capability** | ✅ Full functionality | ❌ Cannot run AI | ⚠️ Limited functionality | **✅ AI + Enterprise** |
+| **Trustworthiness** | ❌ Centralized | ✅ Decentralized | ⚠️ Consortium trust | **✅ Cryptographically Secure** |
+| **Operational Cost** | ⚠️ Ongoing payments | ❌ Expensive Gas | ❌ Complex maintenance | **✅ Low Cost** |
 
-### 🎯 Public Beta Experience Path
+### 🎯 WES's Unique Value: Paradigm Innovation vs. Incremental Optimization
 
-1. **Create Wallet**: Account Management → Wallet Management → Create Wallet
-2. **Start Mining**: Mining Control → Start Mining (input wallet address)
-3. **Check Balance**: Account Management → Query Account Balance
-4. **Make Transfer**: Transfer Operations → Send Transaction
+**Incremental Thinking (Most Projects)**:
+- Increase TPS → Still repeated execution
+- Lower Gas fees → Still has Gas fees
+- Off-chain AI → Sacrifices verifiability
 
-**🎉 Congratulations!** You've just experienced the world's first unified blockchain platform.
+**Paradigm Thinking (WES)**:
+- Define new computing paradigm → ISPC
+- Break through limitations architecturally → Single execution + verification
+- One breakthrough, multiple benefits → AI, cost optimization, enterprise integration
 
-## 🛠️ Installation
+---
 
-### Option 1: Pre-built Binaries
+## 📋 Documentation Navigation
 
-Download the latest release from [GitHub Releases](https://github.com/weisyn/weisyn/releases):
+Want to learn more about WES? Here's documentation navigation organized by role:
 
-```bash
-# Linux/macOS
-wget https://github.com/weisyn/weisyn/releases/latest/download/weisyn-linux-amd64.tar.gz
-tar -xzf weisyn-linux-amd64.tar.gz
-```
-
-### Option 2: Build from Source
-
-```bash
-# Clone repository
-git clone https://github.com/weisyn/weisyn.git
-cd weisyn
-
-# Install dependencies
-go mod download
-
-# Build all components
-make build
-
-# Install globally (optional)
-make install
-```
-
-### Option 3: Docker
-
-```bash
-# Pull latest image
-docker pull weisyn/node:latest
-
-# Run local node
-docker run -p 8080:8080 weisyn/node:latest
-```
-
-## 📝 Usage Examples
-
-### Smart Contract Development
-
-```go
-// hello_world.go
-package main
-
-import "github.com/weisyn/sdk/contract"
-
-func main() {
-    contract.Export("hello", hello)
-}
-
-func hello(name string) string {
-    return "Hello, " + name + " from WES!"
-}
-```
-
-### File Storage
-
-```go
-// Store and retrieve files
-import "github.com/weisyn/sdk/storage"
-
-func main() {
-    // Upload file
-    uri, err := storage.Upload("document.pdf")
-    
-    // Retrieve file
-    data, err := storage.Download(uri)
-}
-```
-
-### AI Inference
-
-```go
-// Run AI models on-chain
-import "github.com/weisyn/sdk/ai"
-
-func main() {
-    // Load model
-    model, err := ai.LoadModel("classifier.onnx")
-    
-    // Run inference
-    result, err := model.Predict(inputData)
-}
-```
-
-## 📚 Documentation
-
-| Resource | Description |
-|----------|-------------|
-| [🏗️ Architecture Guide](docs/architecture/README.md) | System design and technical architecture |
-| [⚡ Quick Start](docs/guides/README.md) | Step-by-step tutorials for beginners |
-| [🔧 API Reference](docs/api/README.md) | Complete API documentation |
-| [🎓 Examples](examples/README.md) | Sample applications and use cases |
-| [🛠️ Development Guide](docs/guides/development.md) | Contributing and development setup |
-
-### For Different User Types
+### 🎯 Navigation by Role
 
 **👨‍💻 Developers**
-- [Contract Development Guide](docs/guides/contracts/README.md)
-- [SDK Documentation](docs/api/sdk.md)
-- [Local Development Setup](docs/guides/development.md)
+- [Quick Start](#-30-second-getting-started) → [Application Examples](./examples/README.md) → [Smart Contract Development](./contracts/README.md)
+
+**🏗️ Architects**
+- [System Architecture](./docs/system/architecture/README.md) → [ISPC Technology](./docs/components/core/ispc/README.md)
+
+**💼 Investors/Partners**
+- [Project Overview](./docs/overview.md) → [Market Positioning](./docs/system/positioning.md)
 
 **🏢 Enterprise Users**
-- [Deployment Guide](docs/guides/deployment/README.md)
-- [Compliance Configuration](docs/guides/compliance.md)
-- [Performance Tuning](docs/guides/performance.md)
+- [Application Scenarios](#-core-capabilities) → [Market Positioning](./docs/system/positioning.md)
 
-**🎯 Node Operators**
-- [Node Setup Guide](docs/guides/node-setup.md)
-- [Network Configuration](docs/guides/network.md)
-- [Monitoring and Maintenance](docs/guides/monitoring.md)
+### 📘 Core Documents
+
+| Document | Description |
+|----------|-------------|
+| ⭐ [Project Overview](./docs/overview.md) | Complete strategic positioning and value proposition |
+| 🏗️ [System Architecture](./docs/system/architecture/README.md) | Five-view architecture details |
+| 🔬 [ISPC Technology](./docs/components/core/ispc/README.md) | Verifiable computing paradigm details |
+
+---
+
+## 🌟 Community & Vision
+
+### Get Help
+
+- 💬 [Discord](https://discord.gg/weisyn) - Technical discussions and real-time support
+- 🐛 [GitHub Issues](https://github.com/weisyn/weisyn/issues) - Bug reports and feature requests
+- 📖 [Technical Documentation](https://docs.weisyn.io) - Complete development guide
+
+### 🌌 Vision: From "Simple Transaction Era" to "Enterprise Application Era"
+
+WES is not just a technical breakthrough, but the realization of a vision. Let's look to the future:
+
+#### The World in 3 Years
+
+> **Give every enterprise a choice**
+>
+> Critical business can run on truly owned infrastructure: clear data ownership, autonomous and controllable AI models, transparent and auditable business processes. This is not against cloud services, but giving enterprises the freedom of choice.
+
+#### The Complete Path from Technical Breakthrough to Business Value
+
+```text
+15 years ago: Bitcoin was born, value trustworthy but functionality limited
+10 years ago: Ethereum appeared, smart contracts but cannot carry enterprise applications
+Today:      WES breakthrough, complete business systems can run on-chain
+3 years later: Enterprise digital civilization runs perpetually in distributed networks
+```
+
+#### We're Not Improving Blockchain, We're Redefining It
+
+- ✅ **Technical Breakthrough**: ISPC verifiable computing paradigm, EUTXO parallel architecture, URES unified resources, PoW+XOR consensus
+- ✅ **Business Value**: From simple tools to enterprise infrastructure
+- ✅ **User Value**: True digital asset ownership, perpetual business system operation
+- ✅ **Developer Experience**: One platform solves all problems
+- ✅ **Future Vision**: Pioneer of the blockchain enterprise application era
+
+---
 
 ## 🤝 Contributing
 
-We welcome contributions from the community! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
-
-### Development
+We welcome community contributions! See [Contributing Guide](CONTRIBUTING.md) for details.
 
 ```bash
 # Set up development environment
-make dev-setup
-
-# Run tests
-make test
-
-# Run linter
-make lint
+go mod tidy
+go test ./...
 
 # Submit changes
 git commit -S -m "feat: your contribution"
 git push origin your-branch
 ```
 
-## 🌍 Community
+---
 
-### Get Help & Stay Updated
+## 🔧 FAQ
 
-| Platform | Purpose | Link |
-|----------|---------|------|
-| 💬 **Discord** | Community chat and support | [Join Discord](https://discord.gg/weisyn) |
-| 🐛 **GitHub Issues** | Bug reports and feature requests | [GitHub Issues](https://github.com/weisyn/weisyn/issues) |
-| 📖 **Documentation** | Complete technical guides | [docs.weisyn.io](https://docs.weisyn.io) |
-| 🎓 **Tutorials** | Learn by example | [tutorials.weisyn.io](https://tutorials.weisyn.io) |
+### Build Failures
+```bash
+go version    # Requires >= 1.19
+```
 
-### Contributing
+### Node Startup Failures
+```bash
+netstat -tulpn | grep :8080  # Check port usage
+./bin/development --verbose   # View detailed logs
+```
 
-- **🐛 Found a bug?** [Report it](https://github.com/weisyn/weisyn/issues/new?template=bug_report.md)
-- **💡 Have an idea?** [Share it](https://github.com/weisyn/weisyn/issues/new?template=feature_request.md)
-- **📝 Documentation?** [Improve it](docs/CONTRIBUTING.md)
-- **💻 Code contributions?** [Submit a PR](https://github.com/weisyn/weisyn/pulls)
+> 📖 **Complete Troubleshooting**: [Developer Documentation](./docs/README.md) | [GitHub Issues](https://github.com/weisyn/weisyn/issues)
+
+---
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is open source under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
 <div align="center">
 
-**🚀 Ready to build the future of Web3+AI?**
+### Defining the Verifiable Computing Paradigm for Blockchain, Enabling Decentralized Intelligence in the AI Era
 
-[Get Started Now](docs/guides/README.md) • [Join Our Community](https://discord.gg/weisyn) • [View Examples](examples/README.md)
+[Get Started](#-30-second-getting-started) • [Join Community](https://discord.gg/weisyn) • [View Documentation](./docs/overview.md)
 
 Made with ❤️ by the WES Team
 
 </div>
+
