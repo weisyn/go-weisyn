@@ -41,14 +41,17 @@ This is not a technical optimization problem, but a **paradigm deficiency**.
 
 ### 💥 Real-World Dilemmas
 
-**Scenario 1: Medical AI Diagnosis Disputes**
-A hospital uses AI-assisted diagnosis, and a patient questions the diagnostic result. The hospital needs to prove that the AI used the correct model and input data, but AI decisions are black-box and cannot be traced. If the AI's reasoning process could be recorded on the blockchain, it would provide an immutable evidence chain. However, traditional blockchain cannot run AI models—because all nodes must produce the same result, while AI inference is non-deterministic.
+**Scenario 1: E-commerce Wants Blockchain for Customer Acquisition, But Business Processes Cannot Go On-Chain**
 
-**Scenario 2: E-commerce Order Payment Failures**
-A user places an order and payment succeeds, but inventory deduction fails, causing the order to be cancelled. The user requests a refund, but the payment system and inventory system have inconsistent data, making it impossible to determine responsibility. If the entire process could execute atomically on the blockchain, this problem would not occur. However, traditional blockchain can only handle single transactions and cannot support cross-system long transactions.
+E-commerce platforms hope to put the complete business process "order → payment → inventory deduction → logistics creation" on-chain, leveraging token incentives, NFT benefits, and other blockchain economic models to attract users and increase engagement. However, traditional blockchain requires all nodes (e.g., 50 nodes) to repeatedly execute the entire process—the payment interface is called 50 times, the inventory database is operated 50 times, logistics APIs are requested 50 times. External systems cannot withstand such high-frequency repeated calls and crash directly. **This is the fundamental reason why blockchain has been stuck in cryptocurrency trading for 15 years and cannot truly serve enterprise applications.**
 
-**Scenario 3: Manufacturing AI Production Scheduling System Crash**
-A factory wants to use AI to optimize production scheduling and record the decision process on-chain. However, traditional blockchain requires 50 nodes to execute repeatedly—meaning the AI model runs 50 times, the database is called 50 times, APIs are requested 50 times... The system crashes directly, and production plans cannot be executed.
+**Scenario 2: Hospitals Want AI On-Chain to Handle Disputes, But AI Cannot Run On-Chain**
+
+Hospitals hope to use AI-assisted diagnosis and record the complete inference process on-chain. When medical disputes occur, they can trace diagnostic evidence and clarify accountability. However, traditional blockchain requires all nodes to execute the AI model and produce identical output results—but AI inference itself is non-deterministic, different nodes running the same model may produce different results, making consensus impossible. **Traditional blockchain cannot run AI at the architectural level.**
+
+**Scenario 3: Factories Need Cross-System Atomicity, But Blockchain Only Supports Single Transactions**
+
+Factory production processes span multiple systems (ERP, MES, WMS) and require atomicity for "order creation → production scheduling → inventory deduction"—if any step fails, everything must roll back. However, traditional blockchain can only handle single transactions and cannot support cross-system long transactions. If split into multiple independent transactions, there will be inconsistent state windows where some succeed and some fail, creating high business risk.
 
 ### ❌ Architectural Defects of Traditional Blockchain
 
