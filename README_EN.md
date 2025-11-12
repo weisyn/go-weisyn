@@ -43,7 +43,7 @@ This is not a technical optimization problem, but a **paradigm deficiency**.
 
 **Scenario 1: E-commerce Wants Blockchain for Customer Acquisition, But Business Processes Cannot Go On-Chain**
 
-E-commerce platforms hope to put the complete business process "order → payment → inventory deduction → logistics creation" on-chain, leveraging token incentives, NFT benefits, and other blockchain economic models to attract users and increase engagement. However, traditional blockchain requires all nodes (e.g., 50 nodes) to repeatedly execute the entire process—the payment interface is called 50 times, the inventory database is operated 50 times, logistics APIs are requested 50 times. External systems cannot withstand such high-frequency repeated calls and crash directly. **This is the fundamental reason why blockchain has been stuck in cryptocurrency trading for 15 years and cannot truly serve enterprise applications.**
+E-commerce platforms hope to put the complete business process "order → payment → inventory deduction → logistics creation" on-chain, leveraging token incentives, NFT benefits, and other blockchain economic models to attract users and increase engagement. However, traditional blockchain requires all nodes (e.g., 50 nodes) to repeatedly execute the entire process—the payment interface is called 50 times, the inventory database is operated 50 times, logistics APIs are requested 50 times. External systems cannot withstand such high-frequency repeated calls and crash directly.
 
 **Scenario 2: Hospitals Want AI On-Chain to Handle Disputes, But AI Cannot Run On-Chain**
 
@@ -72,6 +72,8 @@ Traditional Blockchain = Deterministic Consensus + Repeated Execution
 - ❌ **External side effects problem**: 50 nodes = 50 database operations = Database crash
 - ❌ **Atomicity limitation**: Only supports single transactions, cannot support long-transaction business processes
 - ❌ **High integration cost**: Requires large-scale transformation of traditional business systems
+
+This is the fundamental reason why blockchain has been stuck in cryptocurrency trading for over a decade and cannot truly serve enterprise applications.
 
 ---
 
@@ -391,7 +393,7 @@ Want to learn more about WES? Here's documentation navigation organized by role:
 
 WES is not just a technical breakthrough, but the realization of a vision. Let's look to the future:
 
-#### The World in 3 Years
+#### The Future World
 
 > **Give every enterprise a choice**
 >
@@ -400,10 +402,10 @@ WES is not just a technical breakthrough, but the realization of a vision. Let's
 #### The Complete Path from Technical Breakthrough to Business Value
 
 ```text
-15 years ago: Bitcoin was born, value trustworthy but functionality limited
-10 years ago: Ethereum appeared, smart contracts but cannot carry enterprise applications
-Today:      WES breakthrough, complete business systems can run on-chain
-3 years later: Enterprise digital civilization runs perpetually in distributed networks
+Over a decade ago: Bitcoin was born, value trustworthy but functionality limited
+Several years ago: Ethereum appeared, smart contracts but cannot carry enterprise applications
+Today:            WES breakthrough, complete business systems can run on-chain
+Future:           Enterprise digital civilization runs perpetually in distributed networks
 ```
 
 #### We're Not Improving Blockchain, We're Redefining It
