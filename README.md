@@ -228,7 +228,7 @@ ISPC 的突破让 WES 成为第三代区块链。为了更好地理解 WES 的�
 
 **为什么这很重要？**
 
-| 传统区块链 | WES |
+| 传统区块链 | 微迅链 |
 |----------|-----|
 | ❌ 无法运行AI（确定性共识限制） | ✅ AI模型推理链上运行 |
 | ❌ AI结果必须上链（中心化风险） | ✅ AI推理过程可验证 |
@@ -280,11 +280,29 @@ ISPC 的突破让 WES 成为第三代区块链。为了更好地理解 WES 的�
 
 了解了 WES 的核心能力，你是否想立即体验一下？让我们通过两个简单的示例，快速感受 WES 的强大能力：
 
+## 📋 开始前准备
+
+### 系统要求
+
+**必需依赖**：
+- Go 1.19+ 
+- Git
+
+**可选依赖**（仅在使用AI功能时需要）：
+- **ONNX Runtime**：AI模型推理引擎
+  - macOS: `brew install onnxruntime` 或运行 `./scripts/setup/install_onnxruntime.sh`
+  - Linux: 参考 [ONNX Runtime安装指南](models/docs/ONNX_RUNTIME_INSTALLATION.md)
+  - Docker: 使用官方镜像（已包含所有依赖）
+
+> 💡 **提示**：WES的基础功能（智能合约、转账等）**不需要**ONNX Runtime。只有使用AI模型功能时才需要安装。
+
 ## 🚀 30秒上手：体验 AI 和智能合约
 
 ### 🤖 体验 1：链上 AI 推理（30秒）
 
 **WES 是首个真正支持链上 AI 的区块链**，让我们体验一下：
+
+> ⚠️ **前提条件**：使用AI功能需要先安装ONNX Runtime（见上方"开始前准备"）
 
 ```bash
 # 1. 启动节点
@@ -375,7 +393,7 @@ wes contract call 0x123abc... \
 # ❌ 无法支持企业应用
 ```
 
-**WES**：
+**微迅链**：
 ```bash
 # ✅ AI 在链上运行
 # ✅ 智能合约支持复杂业务
@@ -435,7 +453,7 @@ graph TB
 
 ### 范式创新 vs 改良优化
 
-| 维度 | 云平台 | 传统区块链 | 企业链 | **WES** |
+| 维度 | 云平台 | 传统区块链 | 企业链 | **微迅链** |
 |------|-----------|--------------|----------|-----------|
 | **数据控制** | ❌ 依赖服务商 | ⚠️ 公链无隐私 | ✅ 企业控制 | **✅ 自主+隐私** |
 | **业务能力** | ✅ 功能完整 | ❌ 无法AI | ⚠️ 功能受限 | **✅ AI+企业** |
@@ -544,9 +562,24 @@ git push origin your-branch
 ## 🔧 常见问题
 
 ### 构建失败
+
+**常见原因**：依赖未下载
+
+```bash
+# 方式1：使用 Makefile（推荐，自动处理依赖）
+make build-test
+
+# 方式2：手动确保依赖存在
+bash scripts/build/ensure_onnx_libs.sh
+go build -o bin/testing ./cmd/testing
+```
+
+**其他检查**：
 ```bash
 go version    # 需要 >= 1.19
 ```
+
+> 📖 **详细说明**：[构建依赖管理文档](./docs/system/build/BUILD_DEPENDENCIES.md)
 
 ### 节点启动失败
 ```bash
