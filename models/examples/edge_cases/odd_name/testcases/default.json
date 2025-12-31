@@ -1,0 +1,39 @@
+{
+  "name": "example_odd_name/default",
+  "category": "strict-pass",
+  "kind": "onnx-model",
+  "description": "特殊字符文件名模型的基准测试用例（验证 Unicode 文件名和 int32 输入处理）",
+  "inputs": [
+    {
+      "name": "in",
+      "kind": "tensor",
+      "dtype": "int32",
+      "shape": [1, 2],
+      "field": "int32_data",
+      "values": [1, 2]
+    }
+  ],
+  "expected_outputs": [
+    {
+      "index": 0,
+      "name": "out",
+      "shape": [1],
+      "dtype": "int32",
+      "sample": [3],
+      "match": "exact"
+    }
+  ],
+  "chain_expectations": {
+    "resource": {
+      "must_exist": true,
+      "category": "EXECUTABLE",
+      "executable_type": "AIMODEL"
+    }
+  },
+  "notes": [
+    "模型文件名包含 Unicode 字符（ż, 大, 김），本用例同时验证文件名处理与 int32_data 输入路径。",
+    "输入 [1,2]，输出为 [3]（int32）。"
+  ]
+}
+
+

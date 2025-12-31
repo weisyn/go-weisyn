@@ -1,0 +1,194 @@
+{
+  "_comment": "WES 官方联盟链配置（测试环境示例网络 test-consortium-demo）",
+  "_version": "1.0.0",
+  "_note": "⚠️ 此文件描述了一条官方示例联盟链网络（可直接用于启动示例网络）。如需创建新的联盟链实例，请通过 BaaS 或链初始化工具生成独立配置文件。",
+  "_usage": "可以直接作为 test-consortium-demo 联盟链网络的配置文件使用；要创建属于自己的联盟链，请复制本文件并修改 network/genesis/security 等字段。⚠️ 至少必须修改：chain_id、network_id、network_namespace、genesis.accounts、node.bootstrap_peers、node.host.gater.allow_cidrs。详细说明请见 configs/chains/README.md 中「test-consortium-demo」小节。",
+  
+  "environment": "test",
+  "_comment_environment": "运行环境：枚举值，固定为 test（测试环境），该示例网络推荐使用测试环境；如复制本配置创建新网络，可按需调整为 dev 或 prod",
+  
+  "network": {
+    "_comment": "网络配置：定义链的身份标识（chain_id、network_id、network_namespace、chain_mode），示例联盟链的链级身份",
+    "chain_id": 20002,
+    "_comment_chain_id": "链ID：整数类型，示例网络的 chain_id（20002），范围 20000-29999（联盟链），复制本配置创建新联盟链时请在范围内选择未占用的 ID",
+    "network_id": "WES_consortium_demo_2025",
+    "_comment_network_id": "网络标识符：字符串，示例联盟链网络标识符，格式 WES_<type>_<name>_<year>，复制本配置创建新联盟链时请修改为新的唯一标识符",
+    "network_name": "WES_consortium_demo_2024",
+    "_comment_network_name": "网络名称：字符串，示例联盟链网络名称，复制本配置创建新联盟链时请修改为新的网络名称",
+    "network_namespace": "consortium-demo",
+    "_comment_network_namespace": "网络命名空间：字符串，示例联盟链的 network_namespace（用于 P2P/Gossip/DHT 网络隔离），复制本配置创建新联盟链时请分配新的 namespace",
+    "chain_mode": "consortium",
+    "_comment_chain_mode": "链模式：枚举值，固定为 consortium（联盟链）"
+  },
+  
+  "genesis": {
+    "_comment": "创世配置：定义链的初始状态（timestamp、accounts、expected_genesis_hash），示例联盟成员账户与初始余额，生产环境请替换为真实机构账户并移除私钥字段",
+    "timestamp": 1704067200,
+    "_comment_timestamp": "创世时间戳：整数类型，Unix 时间戳（秒），所有节点必须使用相同值，复制本配置创建新联盟链时请设置为实际的创世时间戳",
+    "expected_genesis_hash": "3564053832fd30e578bbc5ee140eb0cc733cfcbc6c7a84f9337c8a565554a5d8",
+    "_comment_expected_genesis_hash": "预期创世哈希：字符串，十六进制格式，从 genesis 配置确定性计算得出。启动时会校验：如果配置了此字段，必须与计算出的 genesis_hash 完全匹配，否则启动失败。test/prod 环境建议必须配置，dev 环境可省略。",
+    "accounts": [
+      {
+        "_comment": "账户项：定义创世账户信息（name、address、initial_balance），示例联盟成员账户 1，生产环境请替换为真实成员账户并移除私钥字段",
+        "name": "Consortium-Member-1",
+        "_comment_name": "账户名称：字符串，账户标识名称，复制本配置创建新联盟链时请修改为实际的成员名称",
+        "address": "CUQ3g6P5WmFN289pPn7AAhnQ3T2cZRv2BR",
+        "_comment_address": "账户地址：字符串，账户区块链地址，复制本配置创建新联盟链时请修改为实际的成员地址",
+        "initial_balance": "100000000000000000",
+        "_comment_initial_balance": "初始余额：字符串，账户初始余额（BaseUnit单位，1 WES = 10^8 BaseUnit）"
+      },
+      {
+        "_comment": "账户项：定义创世账户信息（name、address、initial_balance），示例联盟成员账户 2，可按需扩展更多成员账户",
+        "name": "Consortium-Member-2",
+        "_comment_name": "账户名称：字符串，账户标识名称，复制本配置创建新联盟链时请修改为实际的成员名称",
+        "address": "CWb1owGnpUaB2JoQPhohpa81Cz9aiqikZG",
+        "_comment_address": "账户地址：字符串，账户区块链地址，复制本配置创建新联盟链时请修改为实际的成员地址",
+        "initial_balance": "100000000000000000",
+        "_comment_initial_balance": "初始余额：字符串，账户初始余额（BaseUnit单位，1 WES = 10^8 BaseUnit）"
+      }
+    ],
+    "_comment_accounts": "创世账户列表：对象数组，定义链的初始账户和余额分配，至少包含一个账户，必需字段"
+  },
+  
+  "sync": {
+    "_comment": "同步配置：定义节点启动时的同步策略，控制是从本地创世还是从网络获取已有区块",
+    "startup_mode": "from_network",
+    "_comment_startup_mode": "启动同步模式：from_network 表示节点应从联盟网络中的其它节点获取已有区块高度后再参与共识/业务，适用于 test/prod 联盟链网络；如需本地单节点开发，请使用 dev 环境并改为 from_genesis。注意：此字段只决定\"从哪儿开始同步\"（from_genesis/from_network），不决定 full/light 模式；所有节点默认是 full，同步模式调整通过运行时 API 完成（POST /node/sync_mode）",
+    "require_trusted_checkpoint": true,
+    "_comment_require_trusted_checkpoint": "是否强制要求配置受信任检查点：布尔值，true 表示必须配置 trusted_checkpoint，false 表示不强制。test/prod 环境的共识节点（miner/validator）建议设为 true，普通节点可设为 false。",
+    "trusted_checkpoint": null,
+    "_comment_trusted_checkpoint": "受信任检查点：对象，包含 height（区块高度）和 block_hash（区块哈希）。当 require_trusted_checkpoint=true 时必须配置。test/prod 环境的共识节点建议配置一个已充分确认的区块高度和哈希，用于同步完整性校验。示例：{\"height\": 1000, \"block_hash\": \"0xabcd1234...\"}"
+  },
+  
+  "environment": "test",
+  "_comment_environment": "运行环境：枚举值，dev（开发）、test（测试）、prod（生产）。影响节点角色策略矩阵和启动行为。",
+  
+  "api": {
+    "_comment": "API 配置：定义 HTTP/gRPC API 服务配置",
+    "http_enabled": true,
+    "_comment_http_enabled": "启用 HTTP API：布尔值，true 启用 HTTP API 服务，false 禁用，默认 true",
+    "http_port": 28680,
+    "_comment_http_port": "HTTP 端口：整数类型，HTTP API 监听端口，范围 1024-65535，默认 28680（WES 端口规范）。可通过命令行参数 --http-port 覆盖（节点级配置，不影响链级配置）",
+    "http_enable_rest": true,
+    "_comment_http_enable_rest": "启用 REST API：布尔值，true 启用 REST 接口，false 禁用，默认 true",
+    "http_enable_jsonrpc": true,
+    "_comment_http_enable_jsonrpc": "启用 JSON-RPC API：布尔值，true 启用 JSON-RPC 接口，false 禁用，默认 true",
+    "http_enable_websocket": true,
+    "_comment_http_enable_websocket": "启用 WebSocket API：布尔值，true 启用 WebSocket 接口，false 禁用，默认 true",
+    "http_cors_enabled": true,
+    "_comment_http_cors_enabled": "启用 CORS：布尔值，true 启用跨域资源共享，false 禁用，默认 true",
+    "http_cors_origins": ["*"],
+    "_comment_http_cors_origins": "CORS 源：字符串数组，允许的跨域来源，默认 [\"*\"] 允许所有来源",
+    "grpc_enabled": true,
+    "_comment_grpc_enabled": "启用 gRPC API：布尔值，true 启用 gRPC 服务，false 禁用，默认 true",
+    "grpc_port": 28682,
+    "_comment_grpc_port": "gRPC 端口：整数类型，gRPC API 监听端口，范围 1024-65535，默认 28682（WES 端口规范）。可通过命令行参数 --grpc-port 覆盖（节点级配置，不影响链级配置）",
+    "enable_mining_api": true,
+    "_comment_enable_mining_api": "启用挖矿 API：布尔值，true 启用挖矿相关 RPC 端点（wes_startMining/wes_stopMining），false 禁用，联盟链默认 true。注意：此字段只控制是否暴露挖矿相关 RPC 端点，不决定节点是否实际在挖矿；挖矿由运行时 API 控制（POST /node/mining），不依赖此配置"
+  },
+  
+  "mining": {
+    "_comment": "挖矿配置：定义 PoW+XOR 共识和出块参数，联盟链模式启用聚合器。注意：mining.* 字段是链级共识参数，控制全网出块节奏/是否启用聚合器；不会记录\"哪些节点挖矿\"，也不会影响某个节点是否参与投票",
+    "target_block_time": "15s",
+    "_comment_target_block_time": "目标出块时间：时间字符串，格式 <数字>s，如 15s，联盟链通常使用较短的出块时间（5-30 秒）",
+    "enable_aggregator": true,
+    "_comment_enable_aggregator": "启用聚合器：布尔值，true 启用分布式聚合器（多机构共识），false 禁用，联盟链默认 true",
+    "max_mining_threads": 4,
+    "_comment_max_mining_threads": "最大挖矿线程数：整数类型，挖矿使用的最大线程数，联盟链默认 4",
+    "_comment_v2_gate": "V2 挖矿稳定性门闸配置（2025-12-15 新增）：控制挖矿前置条件（网络法定人数+高度一致性确认），联盟链推荐严格配置",
+    "min_network_quorum_total": 3,
+    "_comment_min_network_quorum_total": "最小网络法定人数（含本机）：整数类型，默认 2，联盟链建议 >= 3（多机构参与），必须 >= 1（可设为 1 用于单节点测试）",
+    "allow_single_node_mining": false,
+    "_comment_allow_single_node_mining": "是否允许单节点挖矿：布尔值，测试/生产环境联盟链必须为 false，禁止孤岛挖矿",
+    "network_discovery_timeout_seconds": 120,
+    "_comment_network_discovery_timeout_seconds": "网络发现超时（秒）：整数类型，测试环境默认 120，必须 > 0",
+    "quorum_recovery_timeout_seconds": 300,
+    "_comment_quorum_recovery_timeout_seconds": "法定人数恢复超时（秒）：整数类型，测试环境默认 300，必须 > 0",
+    "max_height_skew": 5,
+    "_comment_max_height_skew": "最大高度偏差：整数类型（区块数），统一阈值（不区分 initial/runtime），联盟链允许适度偏差（5），必须 >= 0",
+    "max_tip_staleness_seconds": 300,
+    "_comment_max_tip_staleness_seconds": "链尖最大陈旧时间（秒）：整数类型，测试环境默认 300，必须 > 0",
+    "enable_tip_freshness_check": true,
+    "_comment_enable_tip_freshness_check": "是否启用链尖新鲜度检查：布尔值，测试/生产环境建议启用",
+    "enable_network_alignment_check": true,
+    "_comment_enable_network_alignment_check": "是否启用网络对齐检查：布尔值，true 启用 V2 挖矿门闸，false 禁用（退回旧行为），测试/生产环境必须启用"
+  },
+
+  "blockchain": {
+    "_comment": "区块链配置：定义区块链相关参数",
+    "block": {
+      "_comment": "区块配置：定义区块相关参数",
+      "min_block_interval": 2,
+      "_comment_min_block_interval": "最小出块间隔：整数类型，最小出块间隔（秒），默认 2"
+    }
+  },
+  
+  "node": {
+    "_comment": "节点配置：定义 P2P 网络和节点行为配置，⚠️ 必须修改：配置联盟内节点地址和访问控制",
+    "listen_addresses": [
+      "/ip4/0.0.0.0/tcp/28683",
+      "/ip4/0.0.0.0/udp/28683/quic-v1"
+    ],
+    "_comment_listen_addresses": "监听地址列表：字符串数组，libp2p multiaddr 格式，节点监听的网络地址，默认监听所有接口",
+    "host": {
+      "_comment": "P2P 主机配置：定义 P2P 网络主机的身份和访问控制",
+      "diagnostics_enabled": false,
+      "_comment_diagnostics_enabled": "是否启用诊断 HTTP 服务：布尔值，true 启用诊断端口（用于 pprof / P2P diagnostics 等），false 禁用。⚠️ 仅建议在开发/测试环境启用，生产环境建议保持 false 或通过防火墙限制访问。测试环境默认禁用，如需启用请设置为 true",
+      "diagnostics_port": 28686,
+      "_comment_diagnostics_port": "诊断 HTTP 端口：整数类型，诊断服务监听端口，默认 28686（WES 端口规范）。启用后可通过 http://127.0.0.1:<diagnostics_port>/debug/pprof/ 访问 pprof 性能分析端点。可通过命令行参数 --diagnostics-port 覆盖（节点级配置，不影响链级配置）",
+      "identity": {
+        "_comment": "身份配置：定义 P2P 节点身份",
+        "key_file": "./p2p/identity.key",
+        "_comment_key_file": "密钥文件路径：字符串，P2P 身份密钥文件路径，相对路径或绝对路径，自动生成到指定路径"
+      },
+      "gater": {
+        "_comment": "接入控制配置：定义 P2P 网络接入控制策略，⚠️ 必须修改：配置联盟成员IP段白名单",
+        "mode": "allowlist",
+        "_comment_mode": "接入控制模式：枚举值，固定为 allowlist（白名单），只接受联盟成员 IP 段",
+        "allow_cidrs": [
+          "10.0.0.0/8",
+          "192.168.0.0/16",
+          "172.16.0.0/12"
+        ],
+        "_comment_allow_cidrs": "允许的 CIDR 列表：字符串数组，IP 段白名单（CIDR 格式），⚠️ 必须修改：请修改为实际的联盟成员IP段",
+        "allow_prefixes": [],
+        "_comment_allow_prefixes": "允许的前缀列表：字符串数组，libp2p multiaddr 前缀白名单，默认空数组",
+        "deny_cidrs": [],
+        "_comment_deny_cidrs": "拒绝的 CIDR 列表：字符串数组，IP 段黑名单（CIDR 格式），默认空数组",
+        "deny_prefixes": [],
+        "_comment_deny_prefixes": "拒绝的前缀列表：字符串数组，libp2p multiaddr 前缀黑名单，默认空数组"
+      }
+    },
+    "bootstrap_peers": [
+      "/ip4/10.0.0.1/tcp/28683/p2p/QmConsortiumNode1",
+      "/ip4/10.0.0.2/tcp/28683/p2p/QmConsortiumNode2"
+    ],
+    "_comment_bootstrap_peers": "引导节点列表：字符串数组，libp2p multiaddr 格式，引导节点地址列表，⚠️ 必须修改：请修改为实际的联盟节点地址",
+    "enable_mdns": false,
+    "_comment_enable_mdns": "启用 mDNS：布尔值，true 启用本地网络 mDNS 发现，false 禁用，联盟链默认 false",
+    "enable_dht": true,
+    "_comment_enable_dht": "启用 DHT：布尔值，true 启用分布式哈希表，false 禁用，联盟链默认 true",
+    "enable_nat_port": true,
+    "_comment_enable_nat_port": "启用 NAT 端口映射：布尔值，true 启用 NAT 端口映射，false 禁用，默认 true",
+    "enable_dcutr": true,
+    "_comment_enable_dcutr": "启用 DCUtR：布尔值，true 启用直接连接 UDP 穿透，false 禁用，默认 true",
+    "enable_auto_relay": false,
+    "_comment_enable_auto_relay": "启用自动中继：布尔值，true 启用自动中继，false 禁用，联盟链默认 false"
+  },
+  
+  "security": {
+    "_comment": "安全配置：定义链的安全模型和访问控制策略，联盟链模式为证书许可 + IP 白名单",
+    "access_control": {
+      "_comment": "接入控制配置：定义网络接入控制策略",
+      "mode": "allowlist",
+      "_comment_mode": "接入控制模式：枚举值，固定为 allowlist（白名单），证书许可 + IP 白名单（mTLS + allowlist）"
+    },
+    "certificate_management": {
+      "_comment": "证书管理配置：定义证书管理相关配置，实际部署时由 BaaS/运维下发 CA 与节点证书",
+      "ca_bundle_path": "./data/consortium/ca/ca_bundle.pem",
+      "_comment_ca_bundle_path": "CA Bundle 文件路径：字符串，CA 证书包文件路径，相对路径或绝对路径，实际部署时由 BaaS/运维下发"
+    },
+    "permission_model": "consortium",
+    "_comment_permission_model": "权限模型：枚举值，固定为 consortium（联盟链）"
+  }
+}

@@ -1,0 +1,205 @@
+# 架构守护工具配置文件
+
+# 白名单配置
+whitelist:
+  # 目录级别白名单
+  directories:
+    - "internal/core/ispc/engines/wasm/interfaces" # WASM引擎内部接口可以导入公共接口
+    - "internal/core/ispc/interfaces"              # ISPC内部接口可以导入公共接口
+    - "internal/core/execution/interfaces"         # 内部接口可以导入公共接口
+    - "internal/core/blockchain/interfaces"        # 内部接口可以导入公共接口
+    - "tools"                               # 工具目录例外
+    - "scripts"                             # 脚本目录例外
+    - "cmd"                                 # 命令行工具例外
+    - "examples"                            # 示例代码例外
+    - "docs"                                # 文档目录例外
+    
+  # 文件模式白名单
+  file_patterns:
+    - "*_test.go"                           # 测试文件例外
+    - "*_mock.go"                           # Mock文件例外
+    - "integration_*"                       # 集成测试例外
+    - "benchmark_*"                         # 基准测试例外
+    
+  # 特定文件白名单
+  files:
+    - "internal/core/ispc/module.go"        # ISPC模块装配文件（包含engines）
+    - "internal/core/execution/module.go"  # 模块装配文件可以导入具体实现
+    - "internal/core/blockchain/module.go" # 模块装配文件可以导入具体实现
+
+# 规则配置
+rules:
+  # 直接实现公共接口检查
+  direct_public_interface:
+    enabled: true
+    severity: "ERROR"
+    # 允许的例外情况
+    exceptions:
+      - pattern: "internal/core/.*/interfaces/.*\\.go"
+        reason: "内部接口文件可以导入公共接口"
+      - pattern: "internal/core/.*/module\\.go"
+        reason: "模块装配文件需要导入具体实现"
+        
+  # 跨模块依赖检查
+  cross_module_dependency:
+    enabled: true
+    severity: "ERROR"
+    # 允许的依赖关系
+    allowed_dependencies:
+      - from: "internal/core/engines"
+        to: "pkg/interfaces/engines"
+        reason: "engines可以依赖自己的公共接口"
+      - from: "internal/core/execution"  
+        to: "pkg/interfaces/execution"
+        reason: "execution可以依赖自己的公共接口"
+      - from: "internal/core/execution"
+        to: "pkg/interfaces/engines"
+        reason: "execution可以依赖engines的公共接口"
+        
+  # Manager复杂度检查
+  manager_complexity:
+    enabled: true
+    severity: "WARNING"
+    thresholds:
+      max_file_lines: 200
+      max_method_statements: 20
+      max_cyclomatic_complexity: 10
+    # 已知的复杂Manager例外
+    exceptions:
+      - file: "internal/core/blockchain/transaction/manager.go"
+        reason: "核心交易管理器，正在重构中"
+        max_file_lines: 2000  # 临时提高限制
+      - file: "internal/core/repositories/repository/manager.go"
+        reason: "核心存储管理器，正在重构中"
+        max_file_lines: 1000
+        
+  # 硬编码常量检查
+  hardcoded_constant:
+    enabled: true
+    severity: "WARNING"
+    # WASM函数名检查
+    wasm_functions:
+      - name: "get_caller"
+        constant: "engines.WASMFuncGetCaller"
+      - name: "get_block_height"
+        constant: "engines.WASMFuncGetBlockHeight"
+      - name: "query_utxo_balance"
+        constant: "engines.WASMFuncQueryUTXOBalance"
+    # 例外情况
+    exceptions:
+      - pattern: ".*_test\\.go"
+        reason: "测试文件可以使用硬编码字符串"
+      - pattern: ".*\\.md"
+        reason: "文档文件中的示例代码"
+        
+  # 接口一致性检查
+  interface_consistency:
+    enabled: true
+    severity: "WARNING"
+    # 检查内部接口是否继承公共接口
+    check_inheritance: true
+    # 检查方法签名一致性
+    check_signatures: true
+    
+  # 命名规范检查
+  naming_convention:
+    enabled: true
+    severity: "INFO"
+    patterns:
+      interfaces:
+        pattern: "^[A-Z][a-zA-Z0-9]*$"
+        message: "接口名应使用PascalCase"
+      constants:
+        pattern: "^[A-Z][A-Z0-9_]*$"
+        message: "常量名应使用UPPER_SNAKE_CASE"
+      functions:
+        pattern: "^[A-Z][a-zA-Z0-9]*$"
+        message: "公共函数名应使用PascalCase"
+
+# 报告配置
+reporting:
+  # 输出格式
+  format: "console"  # console, json, xml, markdown
+  
+  # 详细程度
+  verbosity: "normal"  # minimal, normal, verbose
+  
+  # 是否显示修复建议
+  show_suggestions: true
+  
+  # 是否生成修复脚本
+  generate_fix_script: true
+  
+  # 报告文件路径
+  output_file: "reports/architecture-issues.md"
+  
+  # 是否按严重程度分组
+  group_by_severity: true
+  
+  # 是否显示统计信息
+  show_statistics: true
+
+# 性能配置
+performance:
+  # 并发处理文件数
+  max_concurrent_files: 10
+  
+  # 最大内存使用量(MB)
+  max_memory_mb: 512
+  
+  # 超时设置(秒)
+  timeout_seconds: 300
+  
+  # 是否启用缓存
+  enable_cache: true
+  
+  # 缓存目录
+  cache_dir: ".arch-guardian-cache"
+
+# 集成配置
+integration:
+  # Git集成
+  git:
+    enabled: true
+    # 只检查变更的文件
+    check_changed_files_only: false
+    # 基准分支
+    base_branch: "main"
+    
+  # CI/CD集成
+  ci:
+    enabled: true
+    # 失败时退出码
+    failure_exit_code: 1
+    # 是否在PR中添加评论
+    comment_on_pr: true
+    
+  # IDE集成
+  ide:
+    enabled: true
+    # LSP服务器配置
+    lsp_server_port: 28680
+    # 实时检查
+    real_time_check: true
+
+# 实验性功能
+experimental:
+  # 机器学习辅助检测
+  ml_detection:
+    enabled: false
+    model_path: "models/arch-guardian.model"
+    
+  # 自动修复建议
+  auto_fix_suggestions:
+    enabled: true
+    confidence_threshold: 0.8
+    
+  # 架构债务评估
+  debt_assessment:
+    enabled: true
+    debt_threshold: 100  # 债务点数
+    
+  # 趋势分析
+  trend_analysis:
+    enabled: true
+    history_days: 30

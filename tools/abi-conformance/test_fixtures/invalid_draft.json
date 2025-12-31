@@ -1,0 +1,18 @@
+{
+  "name": "invalid_draft_example",
+  "type": "draft",
+  "description": "不符合 WES ABI 规范的 Draft JSON 示例（使用错误的字段名）",
+  "draft": {
+    "sign_mode": "defer_sign",
+    "outputs": [
+      {
+        "type": "state",
+        "state_id": "dGVzdF9zdGF0ZV9pZA==",
+        "version": 1,
+        "exec_hash": "dGVzdF9leGVjX2hhc2g="
+      }
+    ]
+  },
+  "expected_error": "missing required field: state_version"
+}
+

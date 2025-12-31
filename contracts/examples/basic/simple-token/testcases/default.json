@@ -1,0 +1,104 @@
+{
+  "name": "simple-token/default",
+  "category": "strict-pass",
+  "kind": "contract",
+  "description": "Simple Token 合约的基准测试用例",
+  "contract": {
+    "entrypoints": [
+      "GetContractInfo",
+      "GetBalance",
+      "GetTotalSupply",
+      "Transfer"
+    ]
+  },
+  "env": {
+    "network": "testing",
+    "node_mode": "single-node",
+    "jsonrpc_endpoint": "http://127.0.0.1:28680/jsonrpc"
+  },
+  "steps": [
+    {
+      "name": "deploy-contract",
+      "action": "deploy_contract",
+      "params": {
+        "wasm_path": "./contracts/examples/simple-token/simple-token.wasm"
+      },
+      "expect": {
+        "success": true,
+        "contract_address_non_empty": true
+      }
+    },
+    {
+      "name": "query-contract-info",
+      "action": "call",
+      "params": {
+        "method": "GetContractInfo",
+        "args": {}
+      },
+      "expect": {
+        "name": "Simple Token",
+        "symbol": "STK",
+        "decimals": 18,
+        "total_supply": 1000000
+      }
+    },
+    {
+      "name": "query-initial-balance",
+      "action": "call",
+      "params": {
+        "method": "GetBalance",
+        "args": {
+          "address": "$SENDER"
+        }
+      },
+      "expect": {
+        "balance_greater_or_equal": 0
+      }
+    },
+    {
+      "name": "query-total-supply",
+      "action": "call",
+      "params": {
+        "method": "GetTotalSupply",
+        "args": {}
+      },
+      "expect": {
+        "total_supply": 1000000
+      }
+    },
+    {
+      "name": "transfer-and-validate",
+      "action": "call",
+      "params": {
+        "method": "Transfer",
+        "args": {
+          "to": "$RECIPIENT",
+          "amount": "100"
+        }
+      },
+      "expect": {
+        "success": true,
+        "event": {
+          "topic": "TokenTransfer",
+          "fields": {
+            "token": "STK",
+            "amount": "100"
+          }
+        }
+      }
+    }
+  ],
+  "chain_expectations": {
+    "resource": {
+      "must_exist": true,
+      "category": "EXECUTABLE",
+      "executable_type": "CONTRACT"
+    }
+  },
+  "notes": [
+    "该用例用于验证 Simple Token 合约的基本功能：部署、查询、转账。",
+    "执行测试时，应保证节点运行在 testing 环境、单节点共识模式下。",
+    "本示例是资源级合约示例，行为固定，用于平台能力验证。"
+  ]
+}
+

@@ -1,0 +1,38 @@
+{
+  "name": "example_float16/default",
+  "category": "strict-pass",
+  "kind": "onnx-model",
+  "description": "Float16 → BFloat16 精度转换模型的基准测试用例",
+  "inputs": [
+    {
+      "name": "InputA",
+      "kind": "tensor",
+      "dtype": "float16",
+      "shape": [1, 2, 2, 2],
+      "field": "data",
+      "values": [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0]
+    }
+  ],
+  "expected_outputs": [
+    {
+      "index": 0,
+      "name": "OutputA",
+      "shape": [1, 2, 2, 2],
+      "dtype": "bfloat16",
+      "match": "shape-only"
+    }
+  ],
+  "chain_expectations": {
+    "resource": {
+      "must_exist": true,
+      "category": "EXECUTABLE",
+      "executable_type": "AIMODEL"
+    }
+  },
+  "notes": [
+    "输入使用 data 字段 + data_type=float16，WES 引擎内部会将 float32 近似值编码为 IEEE 754 binary16 并按 BFloat16 规格输出。",
+    "当前测试主要检查形状与类型，数值只做粗略验证（因 float16/bfloat16 精度差异）。"
+  ]
+}
+
+

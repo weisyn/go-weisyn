@@ -21,6 +21,8 @@ __          ________ _____  _______     ___   _
 [![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey.svg)]()
 [![Status](https://img.shields.io/badge/Status-Public%20Beta-orange.svg)]()
 
+<sub>📊 代码规模：39.8 万行 Go 代码</sub>
+
 [🚀 立即体验](#-30秒上手) • [💡 核心突破](#-核心突破) • [📖 文档中心](#-文档导航)
 
 </div>
@@ -252,7 +254,7 @@ ISPC 的突破让 WES 成为第三代区块链。为了更好地理解 WES 的�
 - **自动驾驶**：决策过程可追溯，事故责任清晰
 - **电商推荐**：推荐算法透明，防止算法歧视
 
-> 💡 **查看完整列表**：[支持的模型类型](./docs/system/platforms/models/README.md#支持的模型类型) | [模型示例库](./models/examples/README.md)
+> 💡 **模型能力入口**：[ISPC（含 AI 推理能力）](./docs/zh/concepts/ispc.md) | [模型示例库](./models/examples/README.md)
 
 ### 2. 企业应用支持：真实业务场景落地
 
@@ -339,7 +341,7 @@ wes ai infer \
 > - ✅ 图像分类（ResNet、MobileNet、MNIST）
 > - ✅ 文本分类（BERT、DistilBERT）
 > - ✅ 回归预测（sklearn 模型）
-> - ✅ 更多类型：[查看完整列表](./docs/system/platforms/models/README.md#支持的模型类型)
+> - ✅ 更多类型：详见 [ISPC（含 AI 推理能力）](./docs/zh/concepts/ispc.md)
 
 ### 💻 体验 2：智能合约部署（30秒）
 
@@ -381,8 +383,8 @@ wes contract call 0x123abc... \
 - ✅ **长事务支持**：支持复杂业务流程的原子性执行
 
 > 💡 **更多示例**：
-> - [智能合约平台文档](./docs/system/platforms/contracts/getting-started.md)
-> - [AI 模型平台文档](./docs/system/platforms/models/getting-started.md)
+> - [合约教程（入口）](./docs/zh/tutorials/contracts/)
+> - [ISPC 教程（入口）](./docs/zh/tutorials/ispc/)
 
 ### 🎯 这就是 WES 的突破
 
@@ -400,7 +402,7 @@ wes contract call 0x123abc... \
 # ✅ 企业应用真正上链
 ```
 
-> 📖 **完整指南**：[快速开始指南](./docs/README.md) | [智能合约平台](./docs/system/platforms/contracts/getting-started.md) | [AI 模型平台](./docs/system/platforms/models/getting-started.md)
+> 📖 **完整指南**：[文档中心](./docs/README.md) | [中文文档入口](./docs/zh/README.md) | [快速开始](./docs/zh/getting-started/quickstart-local.md)
 
 ---
 
@@ -441,9 +443,9 @@ graph TB
 | **URES** | 合约/AI/数据统一管理 | 降低复杂度，无缝互操作 |
 | **PoW+XOR** | 距离寻址共识 | 零配置，微秒级选择 |
 
-> 💡 **技术细节**：ISPC 使用零知识证明（ZK Proof）技术生成可验证性证明，这是密码学领域的成熟技术。对于技术人员，详见 [ISPC 技术详解](./docs/components/core/ispc/README.md)
+> 💡 **技术细节**：ISPC 使用零知识证明（ZK Proof）技术生成可验证性证明。对于技术人员，详见 [ISPC 概念文档](./docs/zh/concepts/ispc.md)
 
-> 📖 **深入了解**：[系统架构](./docs/system/architecture/README.md) | [ISPC 技术详解](./docs/components/core/ispc/README.md)
+> 📖 **深入了解**：[架构总览](./docs/zh/concepts/architecture-overview.md) | [ISPC 技术详解](./docs/zh/concepts/ispc.md)
 
 ---
 
@@ -481,26 +483,26 @@ graph TB
 ### 按角色导航
 
 **开发者**
-- [快速开始](#-30秒上手) → [智能合约平台](./docs/system/platforms/contracts/getting-started.md) → [AI 模型平台](./docs/system/platforms/models/getting-started.md)
+- [快速开始](#-30秒上手) → [中文文档入口](./docs/zh/README.md) → [教程（入口）](./docs/zh/tutorials/)
 
 **架构师**
-- [系统架构](./docs/system/architecture/README.md) → [ISPC 技术](./docs/components/core/ispc/README.md) → [技术架构](./docs/system/platforms/contracts/technical-architecture.md)
+- [系统架构](./docs/zh/concepts/architecture-overview.md) → [ISPC 技术](./docs/zh/concepts/ispc.md) → [EUTXO / URES / 共识](./docs/zh/concepts/)
 
 **投资人/合作伙伴**
-- [项目总览](./docs/overview.md) → [市场定位](./docs/system/positioning.md) → [智能合约市场价值](./docs/system/platforms/contracts/market-value.md) → [AI 模型市场价值](./docs/system/platforms/models/market-value.md)
+- [项目总览](./docs/zh/concepts/what-is-wes.md) → [架构总览](./docs/zh/concepts/architecture-overview.md) → [核心创新](./docs/zh/concepts/)
 
 **企业用户**
-- [应用场景](#-核心突破) → [智能合约应用场景](./docs/system/platforms/contracts/use-cases.md) → [AI 模型应用场景](./docs/system/platforms/models/use-cases.md)
+- [应用场景](#-核心突破) → [场景实践（入口）](./docs/zh/tutorials/scenarios/) → [ISPC 概念](./docs/zh/concepts/ispc.md)
 
 ### 核心文档
 
 | 文档 | 说明 |
 |------|------|
-| [项目总览](./docs/overview.md) | 完整的战略定位和价值主张 |
-| [系统架构](./docs/system/architecture/README.md) | 五视图架构详解 |
-| [ISPC 技术](./docs/components/core/ispc/README.md) | 可验证计算范式详解 |
-| [智能合约平台](./docs/system/platforms/contracts/README.md) | 智能合约平台综合文档 |
-| [AI 模型平台](./docs/system/platforms/models/README.md) | AI 模型平台综合文档 |
+| [中文文档入口](./docs/zh/README.md) | 面向读者的系统性文档中心（入门/概念/教程/指南/参考） |
+| [WES 是什么](./docs/zh/concepts/what-is-wes.md) | 战略定位与核心价值 |
+| [架构总览](./docs/zh/concepts/architecture-overview.md) | 系统架构鸟瞰与模块边界 |
+| [ISPC](./docs/zh/concepts/ispc.md) | 可验证计算范式与执行模型 |
+| [EUTXO](./docs/zh/concepts/eutxo.md) | 状态与资源的 EUTXO 表达与约束 |
 
 ---
 
@@ -579,11 +581,11 @@ go build -o bin/testing ./cmd/testing
 go version    # 需要 >= 1.19
 ```
 
-> 📖 **详细说明**：[构建依赖管理文档](./docs/system/build/BUILD_DEPENDENCIES.md)
+> 📖 **详细说明**：[开发环境搭建](./docs/zh/contributing/development-setup.md)
 
 ### 节点启动失败
 ```bash
-netstat -tulpn | grep :8080  # 检查端口占用
+netstat -tulpn | grep :28680  # 检查端口占用
 ./bin/development --verbose   # 查看详细日志
 ```
 
@@ -601,7 +603,7 @@ netstat -tulpn | grep :8080  # 检查端口占用
 
 ### 定义区块链的可验证计算范式，开启 AI 时代的去中心化智能
 
-[立即开始](#-30秒上手) • [加入社区](https://discord.gg/weisyn) • [查看文档](./docs/overview.md)
+[立即开始](#-30秒上手) • [加入社区](https://discord.gg/weisyn) • [查看文档](./docs/zh/README.md)
 
 Made with ❤️ by the WES Team
 

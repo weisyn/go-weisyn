@@ -1,0 +1,55 @@
+services:
+  weisyn:
+    image: weisyn-dev:latest
+    container_name: weisyn
+    restart: unless-stopped
+    working_dir: /app
+    environment:
+      WES_ENV: "${WES_ENV:-testing}"
+      WES_LOG_LEVEL: "${WES_LOG_LEVEL:-info}"
+      GOFLAGS: "${GOFLAGS:-}"  # 编译时可设置 -j=1 限制并发编译数，减少内存峰值
+      TZ: "${TZ:-Asia/Shanghai}"
+    ports:
+      - "${HTTP_PORT:-28680}:28680"
+      - "${GRPC_PORT:-28682}:28682"
+      - "${WS_PORT:-28681}:28681"
+      - "${P2P_PORT:-28683}:28683"
+      - "${DIAGNOSTICS_PORT:-28686}:28686"
+    volumes:
+      - ./:/app
+      - ./data:/app/data
+      - ./configs:/app/configs:ro
+      # Go 构建缓存持久化（加速编译 - 避免每次都重新编译所有包）
+      - go-build-cache:/root/.cache/go-build
+      - go-mod-cache:/go/pkg/mod
+    # 内存限制配置（防止 OOM）
+    # 方式1: 使用 mem_limit（适用于单机 Docker，兼容性好）
+    # 注意：Go 编译大型项目（500+ 依赖）时，链接阶段可能占用 4-6GB 内存
+    # 如果编译时出现 OOM，可以临时提高到 8g 或更高
+    mem_limit: 8g  # 最大内存限制（编译推荐 8g，运行时 4g 即可）
+    mem_reservation: 1g  # 保留内存（编译时需要更多保证）
+    memswap_limit: 8g  # 限制 swap 使用（设置为与 mem_limit 相同可禁用 swap）
+    # 
+    # 🔧 如果 8GB 内存仍然不足，可以使用以下方式限制编译并发（减少内存峰值）：
+    # 方式1（推荐）: 使用 -j 标志限制并行编译包数
+    #   docker exec weisyn go build -j=1 -o ./bin/weisyn-node ./cmd/node
+    # 方式2: 使用 GOFLAGS 环境变量（限制所有 go 命令的并发）
+    #   docker exec -e GOFLAGS=-j=1 weisyn go build -o ./bin/weisyn-node ./cmd/node
+    # 方式3: 使用 GOMAXPROCS 限制 Go 运行时并发（对编译有间接影响）
+    #   docker exec -e GOMAXPROCS=2 weisyn go build -o ./bin/weisyn-node ./cmd/node
+    # 方式2: 使用 deploy.resources（适用于 Docker Swarm 模式）
+    # deploy:
+    #   resources:
+    #     limits:
+    #       memory: 4G
+    #     reservations:
+    #       memory: 512M
+    command: ["sleep", "infinity"]
+    healthcheck:
+      test: ["CMD", "true"]
+
+volumes:
+  weisyn-data:
+  go-build-cache:  # Go 构建缓存（加速编译）
+  go-mod-cache:    # Go 模块缓存（避免重复下载依赖）
+

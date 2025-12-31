@@ -1,0 +1,16 @@
+# 排除 data 目录，不打包进镜像
+data/
+
+# 常见的其他排除项
+.git/
+.gitignore
+*.md
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+
+

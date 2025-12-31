@@ -1,0 +1,35 @@
+{
+  "name": "valid_draft_example",
+  "type": "draft",
+  "description": "符合 WES ABI 规范的 Draft JSON 示例",
+  "draft": {
+    "sign_mode": "defer_sign",
+    "outputs": [
+      {
+        "type": "asset",
+        "owner": "0x1234567890123456789012345678901234567890",
+        "amount": "1000",
+        "token_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "metadata": {}
+      },
+      {
+        "type": "state",
+        "state_id": "dGVzdF9zdGF0ZV9pZA==",
+        "state_version": 1,
+        "execution_result_hash": "dGVzdF9leGVjX2hhc2g="
+      }
+    ],
+    "intents": [
+      {
+        "type": "transfer",
+        "params": {
+          "from": "0x1234567890123456789012345678901234567890",
+          "to": "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd",
+          "token_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "amount": "1000"
+        }
+      }
+    ]
+  }
+}
+

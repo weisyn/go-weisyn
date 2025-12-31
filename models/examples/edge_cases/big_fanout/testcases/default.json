@@ -1,0 +1,38 @@
+{
+  "name": "example_big_fanout/default",
+  "category": "stress",
+  "kind": "onnx-model",
+  "description": "大扇出网络的基准测试用例（100 个并行 FC 层）",
+  "inputs": [
+    {
+      "name": "input",
+      "kind": "tensor",
+      "dtype": "float32",
+      "shape": [1, 4],
+      "field": "data",
+      "values": [1.0, 2.0, 3.0, 4.0]
+    }
+  ],
+  "expected_outputs": [
+    {
+      "index": 0,
+      "name": "output",
+      "shape": [1, 4],
+      "dtype": "float32",
+      "match": "shape-only"
+    }
+  ],
+  "chain_expectations": {
+    "resource": {
+      "must_exist": true,
+      "category": "EXECUTABLE",
+      "executable_type": "AIMODEL"
+    }
+  },
+  "notes": [
+    "此用例主要用于测试大扇出网络在 WES 上的性能与资源管理，不做严格数值断言。",
+    "输入向量为 [1,2,3,4]，输出为 float32 形状 [1,4] 的张量。"
+  ]
+}
+
+

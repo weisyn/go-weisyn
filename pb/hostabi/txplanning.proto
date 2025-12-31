@@ -1,0 +1,39 @@
+syntax = "proto3";
+package pb.hostabi;
+
+option go_package = "github.com/weisyn/v1/pb/hostabi";
+
+// UnlockPlan 解锁计划
+//
+// 职责：为交易的所有输入生成签名任务列表
+message UnlockPlan {
+  bytes tx_id = 1;                                  // 交易ID
+  repeated SignTask sign_tasks = 2;                 // 签名任务列表
+  map<string, SignTaskGroup> sign_tasks_by_signer = 3; // 按signer分组的任务
+  map<string, string> metadata = 10;                // 元数据
+}
+
+// SignTask 签名任务
+//
+// 描述单个签名任务的所有信息
+message SignTask {
+  repeated uint32 input_indices = 1;                // 输入索引列表（跨输入去重）
+  string lock_type = 2;                             // 锁定类型（single_key/multi_key/contract等）
+  string signer_hint = 3;                           // 签名者提示（local/kms/hsm/multi_sig等）
+  string signing_algorithm = 4;                     // 签名算法
+  string sighash_type = 5;                          // 签名哈希类型
+  repeated bytes required_public_keys = 6;          // 需要的公钥列表
+  uint32 required_signatures = 7;                   // 需要的签名数量（多签）
+  bytes required_address_hash = 8;                  // 需要的地址哈希（P2PKH）
+  bytes contract_address = 9;                       // 合约地址（合约锁定）
+  string contract_method = 10;                      // 合约方法（合约锁定）
+  bytes delegation_owner = 11;                      // 委托所有者（委托锁定）
+  repeated bytes allowed_delegates = 12;            // 允许的委托者（委托锁定）
+  uint32 threshold_n = 13;                          // 门限签名总数N
+}
+
+// SignTaskGroup 签名任务组（按signer分组）
+message SignTaskGroup {
+  string signer_hint = 1;                           // 签名者提示
+  repeated SignTask tasks = 2;                      // 任务列表
+}

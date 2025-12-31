@@ -1,0 +1,248 @@
+{
+  "_comment": "WES 公有链配置（测试环境示例网络 test-public-demo）",
+  "_version": "1.0.0",
+  "_note": "⚠️ 此文件描述了一条测试环境公有链网络（test-public-demo），多节点模式，可用于搭建公共测试网。此配置不会连接到生产主网，使用独立的测试网链身份。",
+  "_usage": "可以直接作为 test-public-demo 公有链网络的配置文件使用；要创建属于自己的公有链测试网，请复制本文件并修改 network/genesis/security 等字段。⚠️ 至少必须修改：chain_id、network_id、network_namespace、genesis.accounts、node.bootstrap_peers。详细说明请见 configs/chains/README.md 中「test-public-demo」小节。",
+  
+  "environment": "test",
+  "_comment_environment": "运行环境：枚举值，dev（开发）、test（测试）、prod（生产）。影响节点角色策略矩阵和启动行为。test 环境用于多节点测试网；复制本配置创建新公有链时，可按需调整为 dev 或 prod",
+  
+  "network": {
+    "_comment": "网络配置：定义链的身份标识（chain_id、network_id、network_namespace、chain_mode），测试环境公有链的链级身份",
+    "chain_id": 12001,
+    "_comment_chain_id": "链ID：整数类型，test-public-demo 的 chain_id（12001），范围 12000-12999（公有链测试网段），复制本配置创建新公有链时请在范围内选择未占用的 ID，⚠️ 绝对不要使用 chain_id=1（生产主网保留）",
+    "network_id": "WES_public_testnet_demo_2025",
+    "_comment_network_id": "网络标识符：字符串，测试环境公有链网络标识符，格式 WES_<type>_<name>_<year>，显式包含 testnet 标识，复制本配置创建新公有链时请修改为新的唯一标识符",
+    "network_name": "WES_public_testnet_demo_2024",
+    "_comment_network_name": "网络名称：字符串，测试环境公有链网络名称，复制本配置创建新公有链时请修改为新的网络名称",
+    "network_namespace": "public-testnet-demo",
+    "_comment_network_namespace": "网络命名空间：字符串，测试环境公有链的 network_namespace（用于 P2P/Gossip/DHT 网络隔离），复制本配置创建新公有链时请分配新的 namespace，⚠️ 绝对不要使用 mainnet-public（生产主网保留）",
+    "chain_mode": "public",
+    "_comment_chain_mode": "链模式：枚举值，固定为 public（公有链）"
+  },
+  
+  "genesis": {
+    "_comment": "创世配置：定义链的初始状态（timestamp、accounts、expected_genesis_hash）。本测试网按“常见区块链项目”的思路做初始代币分配：国库/生态激励/挖矿奖励池/水龙头/开发/社区等。你可以在不改其它链级身份字段（chain_id/network_id/network_namespace/timestamp）的前提下，手动替换这些地址为你们自己的真实地址；替换后务必重新计算 expected_genesis_hash。",
+    "timestamp": 1704067200,
+    "_comment_timestamp": "创世时间戳：整数类型，Unix 时间戳（秒），所有节点必须使用相同值，复制本配置创建新公有链时请设置为实际的创世时间戳",
+    "expected_genesis_hash": "ded0277d2d42f74c39ccda2dfafc0dfeafe0b889ed798bcbb24fde8b2c87b485",
+    "_comment_expected_genesis_hash": "预期创世哈希：字符串，十六进制格式，从 genesis 配置确定性计算得出。启动时会校验：如果配置了此字段，必须与计算出的 genesis_hash 完全匹配，否则启动失败。test/prod 环境建议必须配置，dev 环境可省略。",
+    "accounts": [
+      {
+        "_comment": "国库/基金会（Treasury）：用于长期运营、基础设施、应急资金等。⚠️ 请替换为你们的国库地址。",
+        "name": "Treasury",
+        "_comment_name": "账户名称：字符串，账户标识名称（可选，仅用于可读性）",
+        "address": "CSBLz58EQ2g6ygxetG8ovAUVCKBBwR6o8T",
+        "_comment_address": "账户地址：字符串，WES Base58Check 地址（必需）。⚠️ 请替换为你们的真实地址。",
+        "initial_balance": "40000000000000000",
+        "_comment_initial_balance": "初始余额：字符串，最小单位（BaseUnit）。推荐口径：1 WES = 10^8 BaseUnit（精度 8 位）。本项示例：400,000,000 WES（= 40,000,000,000,000,000 BaseUnit）"
+      },
+      {
+        "_comment": "生态激励池（Ecosystem Incentives）：用于生态合作/补贴/活动奖励等。⚠️ 请替换为你们的激励池地址。",
+        "name": "Ecosystem-Incentives",
+        "_comment_name": "账户名称：字符串，账户标识名称（可选，仅用于可读性）",
+        "address": "CVbbSyZSzhuWMv7ZM9LfRfhqEH13oJmBSi",
+        "_comment_address": "账户地址：字符串，WES Base58Check 地址（必需）。⚠️ 请替换为你们的真实地址。",
+        "initial_balance": "25000000000000000",
+        "_comment_initial_balance": "初始余额：字符串，最小单位（BaseUnit）。本项示例：250,000,000 WES（= 25,000,000,000,000,000 BaseUnit）"
+      },
+      {
+        "_comment": "挖矿/验证者奖励池（Mining/Validator Rewards）：用于后续出块奖励、节点激励等。⚠️ 请替换为你们的奖励池地址。",
+        "name": "Mining-Rewards",
+        "_comment_name": "账户名称：字符串，账户标识名称（可选，仅用于可读性）",
+        "address": "Cehcz5jerccTRjhNiPNFDHAaG7jDPcKJYP",
+        "_comment_address": "账户地址：字符串，WES Base58Check 地址（必需）。⚠️ 请替换为你们的真实地址。",
+        "initial_balance": "20000000000000000",
+        "_comment_initial_balance": "初始余额：字符串，最小单位（BaseUnit）。本项示例：200,000,000 WES（= 20,000,000,000,000,000 BaseUnit）"
+      },
+      {
+        "_comment": "水龙头（Faucet）：用于测试网发放少量测试币给开发者/测试者。⚠️ 请替换为你们的水龙头地址。",
+        "name": "Faucet",
+        "_comment_name": "账户名称：字符串，账户标识名称（可选，仅用于可读性）",
+        "address": "CXYayrsFvbaPhPPj6DRDDUuvqb4RGhf9WM",
+        "_comment_address": "账户地址：字符串，WES Base58Check 地址（必需）。⚠️ 请替换为你们的真实地址。",
+        "initial_balance": "5000000000000000",
+        "_comment_initial_balance": "初始余额：字符串，最小单位（BaseUnit）。本项示例：50,000,000 WES（= 5,000,000,000,000,000 BaseUnit）"
+      },
+      {
+        "_comment": "开发/团队（Dev/Team）：用于测试网开发、联调、Bug bounty 等。⚠️ 请替换为你们的开发资金地址。",
+        "name": "Dev-Team",
+        "_comment_name": "账户名称：字符串，账户标识名称（可选，仅用于可读性）",
+        "address": "CJPBRsdAPmGCqhyYbfW4wBvde6nqnupeAz",
+        "_comment_address": "账户地址：字符串，WES Base58Check 地址（必需）。⚠️ 请替换为你们的真实地址。",
+        "initial_balance": "8000000000000000",
+        "_comment_initial_balance": "初始余额：字符串，最小单位（BaseUnit）。本项示例：80,000,000 WES（= 8,000,000,000,000,000 BaseUnit）"
+      },
+      {
+        "_comment": "社区空投/活动（Community/Airdrop）：用于测试网拉新/空投/活动奖励。⚠️ 请替换为你们的活动地址。",
+        "name": "Community-Airdrop",
+        "_comment_name": "账户名称：字符串，账户标识名称（可选，仅用于可读性）",
+        "address": "CJXrzvPXMUFcJmgWwe1WTdRuTB1WwLiC7t",
+        "_comment_address": "账户地址：字符串，WES Base58Check 地址（必需）。⚠️ 请替换为你们的真实地址。",
+        "initial_balance": "2000000000000000",
+        "_comment_initial_balance": "初始余额：字符串，最小单位（BaseUnit）。本项示例：20,000,000 WES（= 2,000,000,000,000,000 BaseUnit）"
+      }
+    ],
+    "_comment_accounts": "创世账户列表：对象数组，定义链的初始账户和余额分配，至少包含一个账户，必需字段"
+  },
+
+  "sync": {
+    "_comment": "同步配置：定义节点启动时的同步策略，控制是从本地创世还是从网络获取已有区块",
+    "startup_mode": "from_network",
+    "_comment_startup_mode": "启动同步模式：from_network 表示节点优先尝试从网络获取已有区块高度后再参与出块/业务，适用于 test/prod 公共测试网；如需本地单节点开发，请使用 dev 环境并改为 from_genesis。注意：1) 创世区块始终由本地根据配置构建，from_network 只是优先尝试从网络补齐历史；2) 如果网络中不存在任何上游WES节点，则退化为单节点 Bootstrapping 模式；3) 此字段只决定\"从哪儿开始同步\"（from_genesis/from_network），不决定 full/light 模式；所有节点默认是 full，同步模式调整通过运行时 API 完成（POST /node/sync_mode）",
+    "require_trusted_checkpoint": false,
+    "_comment_require_trusted_checkpoint": "是否强制要求配置受信任检查点：布尔值，true 表示必须配置 trusted_checkpoint，false 表示不强制。test/prod 环境的共识节点（miner/validator）建议设为 true，普通节点可设为 false。",
+    "trusted_checkpoint": null,
+    "_comment_trusted_checkpoint": "受信任检查点：对象，包含 height（区块高度）和 block_hash（区块哈希）。当 require_trusted_checkpoint=true 时必须配置。test/prod 环境的共识节点建议配置一个已充分确认的区块高度和哈希，用于同步完整性校验。"
+  },
+  
+  "environment": "test",
+  "_comment_environment": "运行环境：枚举值，dev（开发）、test（测试）、prod（生产）。影响节点角色策略矩阵和启动行为。",
+  
+  "api": {
+    "_comment": "API 配置：定义 HTTP/gRPC API 服务配置",
+    "http_enabled": true,
+    "_comment_http_enabled": "启用 HTTP API：布尔值，true 启用 HTTP API 服务，false 禁用，默认 true",
+    "http_port": 28680,
+    "_comment_http_port": "HTTP 端口：整数类型，HTTP API 监听端口，范围 1024-65535，默认 28680（WES 端口规范）。可通过命令行参数 --http-port 覆盖（节点级配置，不影响链级配置）",
+    "http_enable_rest": true,
+    "_comment_http_enable_rest": "启用 REST API：布尔值，true 启用 REST 接口，false 禁用，默认 true",
+    "http_enable_jsonrpc": true,
+    "_comment_http_enable_jsonrpc": "启用 JSON-RPC API：布尔值，true 启用 JSON-RPC 接口，false 禁用，默认 true",
+    "http_enable_websocket": true,
+    "_comment_http_enable_websocket": "启用 WebSocket API：布尔值，true 启用 WebSocket 接口，false 禁用，默认 true",
+    "http_cors_enabled": true,
+    "_comment_http_cors_enabled": "启用 CORS：布尔值，true 启用跨域资源共享，false 禁用，默认 true",
+    "http_cors_origins": ["*"],
+    "_comment_http_cors_origins": "CORS 源：字符串数组，允许的跨域来源，默认 [\"*\"] 允许所有来源",
+    "grpc_enabled": true,
+    "_comment_grpc_enabled": "启用 gRPC API：布尔值，true 启用 gRPC 服务，false 禁用，默认 true",
+    "grpc_port": 28682,
+    "_comment_grpc_port": "gRPC 端口：整数类型，gRPC API 监听端口，范围 1024-65535，默认 28682（WES 端口规范）。可通过命令行参数 --grpc-port 覆盖（节点级配置，不影响链级配置）",
+    "enable_mining_api": true,
+    "_comment_enable_mining_api": "启用挖矿 API：布尔值，true 启用挖矿相关 RPC 端点（wes_startMining/wes_stopMining），false 禁用，测试环境默认 true。注意：此字段只控制是否暴露挖矿相关 RPC 端点，不决定节点是否实际在挖矿；挖矿由运行时 API 控制（POST /node/mining），不依赖此配置"
+  },
+  
+  "mining": {
+    "_comment": "挖矿配置：定义 PoW+XOR 共识和出块参数，测试环境启用聚合器（多节点共识）。注意：mining.* 字段是链级共识参数，控制全网出块节奏/是否启用聚合器；不会记录\"哪些节点挖矿\"，也不会影响某个节点是否参与投票",
+    "target_block_time": "30s",
+    "_comment_target_block_time": "目标出块时间：时间字符串，格式 <数字>s，如 30s，测试环境通常使用较短的出块时间（10-60 秒）",
+    "enable_aggregator": true,
+    "_comment_enable_aggregator": "启用聚合器：布尔值，true 启用分布式聚合器（多节点共识），false 禁用，测试环境必须为 true，默认 true",
+    "max_mining_threads": 4,
+    "_comment_max_mining_threads": "最大挖矿线程数：整数类型，挖矿使用的最大线程数，测试环境默认 4",
+    "_comment_v2_gate": "V2 挖矿稳定性门闸配置（2025-12-15 新增）：控制挖矿前置条件（网络法定人数+高度一致性确认），测试环境推荐严格配置",
+    "min_network_quorum_total": 1,
+    "_comment_min_network_quorum_total": "最小网络法定人数（含本机）：整数类型，默认 2，测试环境公链建议 >= 3，必须 >= 1（可设为 1 用于单节点测试）",
+    "allow_single_node_mining": false,
+    "_comment_allow_single_node_mining": "是否允许单节点挖矿：布尔值，测试环境可设为 true 以支持单节点测试，生产环境必须为 false",
+    "network_discovery_timeout_seconds": 120,
+    "_comment_network_discovery_timeout_seconds": "网络发现超时（秒）：整数类型，测试环境默认 120，必须 > 0",
+    "quorum_recovery_timeout_seconds": 300,
+    "_comment_quorum_recovery_timeout_seconds": "法定人数恢复超时（秒）：整数类型，测试环境默认 300，必须 > 0",
+    "max_height_skew": 3,
+    "_comment_max_height_skew": "最大高度偏差：整数类型（区块数），统一阈值（不区分 initial/runtime），测试环境建议严格（3），必须 >= 0",
+    "max_tip_staleness_seconds": 300,
+    "_comment_max_tip_staleness_seconds": "链尖最大陈旧时间（秒）：整数类型，测试环境默认 300，必须 > 0",
+    "enable_tip_freshness_check": true,
+    "_comment_enable_tip_freshness_check": "是否启用链尖新鲜度检查：布尔值，测试/生产环境建议启用",
+    "enable_network_alignment_check": true,
+    "_comment_enable_network_alignment_check": "是否启用网络对齐检查：布尔值，true 启用 V2 挖矿门闸，false 禁用（退回旧行为），测试/生产环境必须启用"
+  },
+  
+  "blockchain": {
+    "_comment": "区块链配置：定义区块链相关参数",
+    "block": {
+      "_comment": "区块配置：定义区块相关参数",
+      "min_block_interval": 30,
+      "_comment_min_block_interval": "最小出块间隔：整数类型，最小出块间隔（秒），默认 30"
+    },
+    "sync": {
+      "_comment": "同步配置：定义区块链同步相关参数",
+      "advanced": {
+        "_comment": "高级同步配置：控制同步模块的高级行为",
+        "auto_reorg_max_depth": 2000,
+        "_comment_auto_reorg_max_depth": "自动 reorg 最大深度：整数类型，同步模块检测到分叉后允许自动下载并重组的最大深度。默认 1000，对于长时间离线后重新同步的节点可能需要更大值。设为 2000 以支持较大范围的同步追赶。",
+        
+        "circuit_breaker_failure_threshold": 5,
+        "_comment_circuit_breaker_failure_threshold": "熔断失败阈值：整数类型，连续失败多少次后触发熔断。默认 3，调整为 5 以容忍网络抖动。",
+        "circuit_breaker_recovery_seconds": 60,
+        "_comment_circuit_breaker_recovery_seconds": "熔断恢复时间（秒）：整数类型，熔断后多少秒恢复。默认 300（5分钟），调整为 60（1分钟）以快速恢复。",
+        
+        "connect_timeout": "30s",
+        "_comment_connect_timeout": "连接超时：时间字符串，P2P 连接建立超时。默认 15s，调整为 30s 以适应不稳定网络。",
+        "read_timeout": "30s",
+        "_comment_read_timeout": "读取超时：时间字符串，P2P 响应读取超时。默认 20s，调整为 30s 以适应不稳定网络。",
+        "write_timeout": "15s",
+        "_comment_write_timeout": "写入超时：时间字符串，P2P 请求写入超时。默认 10s，调整为 15s 以适应不稳定网络。"
+      }
+    }
+  },
+  
+  "node": {
+    "_comment": "节点配置：定义 P2P 网络和节点行为配置。⚠️ 此配置适用于普通节点（Regular Node，99% 的节点）。如需部署基础设施节点（Infrastructure Node），请通过节点级配置覆盖 enable_autonat_service 和 enable_auto_relay 等字段。",
+    "listen_addresses": [
+      "/ip4/0.0.0.0/tcp/28683",
+      "/ip6/::/tcp/28683",
+      "/ip4/0.0.0.0/udp/28683/quic-v1",
+      "/ip6/::/udp/28683/quic-v1"
+    ],
+    "_comment_listen_addresses": "监听地址列表：字符串数组，libp2p multiaddr 格式，节点监听的网络地址，测试环境默认监听所有接口",
+    "host": {
+      "_comment": "P2P 主机配置：定义 P2P 网络主机的身份和访问控制",
+      "diagnostics_enabled": true,
+      "_comment_diagnostics_enabled": "是否启用诊断 HTTP 服务：布尔值，true 启用诊断端口（用于 pprof / P2P diagnostics 等），false 禁用。测试环境当前默认启用，便于对接 diagnose_node.sh 和 pprof 调试；如需对外开放，请配合防火墙/安全组限制访问。",
+      "diagnostics_port": 28686,
+      "_comment_diagnostics_port": "诊断 HTTP 端口：整数类型，诊断服务监听端口，默认 28686（WES 端口规范）。启用后可通过 http://127.0.0.1:<diagnostics_port>/debug/pprof/ 访问 pprof 性能分析端点。可通过命令行参数 --diagnostics-port 覆盖（节点级配置，不影响链级配置）",
+      "identity": {
+        "_comment": "身份配置：定义 P2P 节点身份",
+        "key_file": "./p2p/identity.key",
+        "_comment_key_file": "密钥文件路径：字符串，P2P 身份密钥文件路径，相对路径或绝对路径，自动生成到指定路径"
+      },
+      "advertise_private_addrs": true,
+      "_comment_advertise_private_addrs": "是否公告私网地址：布尔值。⚠️ 已改为 true：局域网测试环境必须发布私网地址，否则DHT能发现PeerID但无法建立连接。公网部署时应改为 false。",
+      "gater": {
+        "_comment": "接入控制配置：定义 P2P 网络接入控制策略，测试环境默认开放接入（可根据需要改为 allowlist）",
+        "mode": "open",
+        "_comment_mode": "接入控制模式：枚举值，open（开放接入）或 allowlist（白名单），测试环境默认 open，如需限制可改为 allowlist",
+        "allow_cidrs": [],
+        "_comment_allow_cidrs": "允许的 CIDR 列表：字符串数组，IP 段白名单（CIDR 格式），mode=open 时为空数组，mode=allowlist 时需配置实际 IP 段",
+        "allow_prefixes": [],
+        "_comment_allow_prefixes": "允许的前缀列表：字符串数组，libp2p multiaddr 前缀白名单，默认空数组",
+        "deny_cidrs": [],
+        "_comment_deny_cidrs": "拒绝的 CIDR 列表：字符串数组，IP 段黑名单（CIDR 格式），默认空数组",
+        "deny_prefixes": [],
+        "_comment_deny_prefixes": "拒绝的前缀列表：字符串数组，libp2p multiaddr 前缀黑名单，默认空数组"
+      }
+    },
+    "bootstrap_peers": [
+      "/ip4/101.37.245.124/tcp/28683/p2p/12D3KooWCcyy7WmXME4oUHYHUBwCrBXa5eiRRH1d373gJh2ootRH"
+    ],
+    "_comment_bootstrap_peers": "引导节点列表：字符串数组，libp2p multiaddr 格式。推荐至少包含 1-3 个 WES 基础设施节点（如阿里云 EIP 节点），负责 WES testnet 内部的 DHT/节点发现；同时可以附加少量 libp2p 公共 bootstrap 节点，作为 AutoNAT/连通性辅助。链隔离通过 network_namespace（public-testnet-demo）实现，不会连接到生产主网（mainnet-public）节点。",
+    "enable_mdns": true,
+    "_comment_enable_mdns": "启用 mDNS：布尔值，true 启用本地网络 mDNS 发现，false 禁用，测试环境默认 false",
+    "enable_dht": true,
+    "_comment_enable_dht": "启用 DHT：布尔值，true 启用分布式哈希表，false 禁用，测试环境多节点模式需要 DHT，默认 true",
+    "enable_nat_port": true,
+    "_comment_enable_nat_port": "启用 NAT 端口映射：布尔值，true 启用 NAT 端口映射，false 禁用，测试环境默认 true",
+    "enable_dcutr": true,
+    "_comment_enable_dcutr": "启用 DCUtR：布尔值，true 启用直接连接 UDP 穿透，false 禁用，测试环境默认 true",
+    "enable_auto_relay": true,
+    "_comment_enable_auto_relay": "启用自动中继：布尔值，true 启用自动中继，false 禁用。普通节点默认 false（不承担中继职责），基础设施节点应设为 true",
+    "enable_autonat_client": true,
+    "_comment_enable_autonat_client": "启用 AutoNAT 客户端：布尔值，true 启用可达性自检测（推荐用于公有链测试网），false 禁用。AutoNAT 用于自动判断本节点是公网可达还是位于 NAT 后。普通节点和基础设施节点都应启用此选项。",
+    "_comment_node_role": "节点角色说明：此配置为普通节点（Regular Node）配置，适用于 99% 的节点。普通节点会自动启用 AutoNAT 客户端、NAT 端口映射、DCUtR 等能力，但不承担 AutoNAT 服务和 AutoRelay 等基础设施职责。如需部署基础设施节点（Infrastructure Node），请通过节点级配置覆盖 enable_autonat_service=true 和 enable_auto_relay=true。基础设施节点通常部署在云服务器/EIP 服务器上，每条链建议 3-5 台。"
+  },
+  
+  "security": {
+    "_comment": "安全配置：定义链的安全模型和访问控制策略，测试环境使用开放接入（可根据需要改为 allowlist）",
+    "access_control": {
+      "_comment": "接入控制配置：定义网络接入控制策略",
+      "mode": "open",
+      "_comment_mode": "接入控制模式：枚举值，open（开放接入）或 allowlist（白名单），测试环境默认 open，如需限制可改为 allowlist"
+    },
+    "permission_model": "public",
+    "_comment_permission_model": "权限模型：枚举值，固定为 public（公有链），测试环境使用公有链权限模型"
+  }
+}
+

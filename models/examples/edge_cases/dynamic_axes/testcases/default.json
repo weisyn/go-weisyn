@@ -1,0 +1,39 @@
+{
+  "name": "example_dynamic_axes/default",
+  "category": "strict-pass",
+  "kind": "onnx-model",
+  "description": "动态轴模型的基准测试用例（批次大小为 1）",
+  "inputs": [
+    {
+      "name": "input_vectors",
+      "kind": "tensor",
+      "dtype": "float32",
+      "shape": [1, 10],
+      "field": "data",
+      "values": [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]
+    }
+  ],
+  "expected_outputs": [
+    {
+      "index": 0,
+      "name": "output_scalars",
+      "shape": [1],
+      "dtype": "float32",
+      "sample": [55.0],
+      "match": "prefix"
+    }
+  ],
+  "chain_expectations": {
+    "resource": {
+      "must_exist": true,
+      "category": "EXECUTABLE",
+      "executable_type": "AIMODEL"
+    }
+  },
+  "notes": [
+    "输入为单个长度为 10 的向量 [1..10]，输出为其和 55（形状 [1]）。",
+    "本用例验证 WES 对动态批次维度（-1）的处理能力和基本数值正确性。"
+  ]
+}
+
+

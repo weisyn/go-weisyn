@@ -1,0 +1,240 @@
+syntax = "proto3";
+package pb.blockchain.resource;
+
+option go_package = "github.com/weisyn/v1/pb/blockchain/block/transaction/resource";
+
+/**
+ * ████████████████████████████████████████████████████████████████████████████████████████████
+ * 资源系统 - 纯粹内容载体定义（严格边界分离）
+ * ████████████████████████████████████████████████████████████████████████████████████████████
+ * 
+ * 🎯 核心设计原则（已验证的正确架构）：
+ * 1. **高内聚低耦合**：Resource专注资源本身，不涉及交易、权限等外部关注点
+ * 2. **强类型安全**：为WASM等资源提供具体的强类型配置，避免通用map
+ * 3. **职责单一**：资源就是资源，交易层负责权限、生命周期、元数据等扩展功能
+ * 4. **内容驱动**：content_hash是资源的唯一身份标识，内容变化=新资源
+ * 5. **存储分离**：存储位置由实现负责（不在本协议中定义），本文件仅保留必要的引用字段
+ * 6. **理论一致性**：完全符合统一权利载体理论 - Resource为内容载体，Transaction实现权利载体
+ * 
+ * ⚠️ 重要边界说明（防止认知错误 - 这是正确设计！）：
+ * - Resource层【仅】定义内容载体，【绝不】定义权利属性（这是特性，不是缺陷！）
+ * - 权利类型（所有权/使用权/执行权）【必须】由Transaction层的locking_conditions定义
+ * - 操作模式（引用/消费）【必须】由Transaction层的is_reference_only表达
+ * - 权利验证【必须】由Transaction层的unlocking_proof实现
+ * - 这种分离是经过理论验证的正确架构，确保了高内聚低耦合！
+ * 
+ * 🚫 常见错误理解（请避免）：
+ * - ❌ "ResourceReference应该包含权利属性" → 错误！这会破坏分层边界
+ * - ❌ "Resource层应该定义操作模式" → 错误！操作模式属于Transaction层
+ * - ❌ "缺少权利管理是设计缺陷" → 错误！权利管理在Transaction层是正确设计
+ * - ✅ 正确理解：每层专注自己的职责，通过组合实现复杂功能
+ * 
+ * 📋 与其他模块的正确关系：
+ * • **Resource（本文件）**：定义资源的类型、身份和执行配置（纯内容层面）
+ * • **transaction.proto**：定义资源在交易中的引用与权限裁决入口（锁定/解锁）
+ *                        负责【所有】权利相关概念（引用/消费、所有权/使用权等）
+ * • **execution层**：基于ResourceCategory/ExecutableType进行执行路由
+ * 
+ * 🏗️ 分层架构（理论验证的正确实现）：
+ * ```
+ * 权利载体层 (transaction.proto)    → 权利裁决、生命周期管理、操作语义
+ *    ↓ 引用而非嵌入
+ * 内容载体层 (resource.proto)      → 资源身份、类型定义、执行配置（纯内容）
+ * ```
+ * 
+ * 💡 设计哲学：内容哈希即身份，分层专职，通过引用组合实现统一权利载体理论
+ */
+
+/**
+ * ResourceCategory - 顶层资源分类（严格符合顶层设计）
+ *
+ * 🎯 设计原则：可执行资源和静态资源平级
+ */
+enum ResourceCategory {
+  RESOURCE_CATEGORY_UNKNOWN = 0;
+  RESOURCE_CATEGORY_EXECUTABLE = 1;         // 可执行资源（能力载体）
+  RESOURCE_CATEGORY_STATIC = 2;             // 静态资源（价值载体）
+}
+
+/**
+ * ExecutableType - 可执行资源子类型（基于执行引擎）
+ *
+ * 🎯 设计原则：基于internal/core/engines中实际提供的执行引擎
+ */
+enum ExecutableType {
+  EXECUTABLE_TYPE_UNKNOWN = 0;
+  EXECUTABLE_TYPE_CONTRACT = 1;             // 智能合约（contract engine）
+  EXECUTABLE_TYPE_AIMODEL = 2;              // AI模型（aimodel engine）
+  
+  // 预留未来执行引擎扩展空间
+  reserved 3 to 999;
+}
+
+// ⚠️ 设计边界：操作模式（引用/消费）属于交易层行为表达，不在资源层定义
+// 原因：Resource层专注内容载体，Transaction层负责权利裁决
+// 这是架构设计的正确分工，不是遗漏！
+
+// ⚠️ 设计边界：权限/授权由交易层锁定/解锁系统统一裁决，资源层不定义权利类型
+// 原因：符合统一权利载体理论 - Resource是内容载体，Transaction实现权利载体
+// 这是理论指导的正确实现，不是设计缺陷！
+
+// ⚠️ 设计边界：资源层不承载权利属性。相关信息由交易输入的解锁证明与脚本裁决
+// 原因：高内聚低耦合原则 - 权利管理是Transaction层的核心职责
+// 通过EUTXO三层输出（AssetOutput/ResourceOutput/StateOutput）实现权利载体理论
+
+/**
+ * Resource - 纯内容载体定义（权利与内容严格分离）
+ * 
+ * 🎯 在TX架构中的位置：
+ * ```
+ * Transaction (权限验证 + 状态转换)
+ *    ↓
+ * TxOutput (创建新UTXO)
+ *    ├─ AssetOutput    (💰 价值载体：Token/NFT/SFT)
+ *    ├─ ResourceOutput (⚙️ 能力载体：Contract/Model/File) ← Resource定义在此
+ *    └─ StateOutput    (📊 证据载体：Execution/Snapshot)
+ * ```
+ * 
+ * ⚠️ 设计边界（核心原则）：
+ * ✅ Resource【仅】定义内容（是什么）
+ * ✅ Transaction【负责】权限（如何使用）
+ * ✅ ResourceOutput 与 Asset/State **完全平等**
+ * ❌ Resource【绝不】定义权利属性
+ * 
+ * 🔒 权限验证要点（必须理解）：
+ * 1. **资源创建需要TX权限验证**：
+ *    - 创建ResourceOutput必须通过Transaction
+ *    - 需要消费输入UTXO支付费用
+ *    - 需要提供UnlockingProof证明有权支付费用
+ * 
+ * 2. **资源引用需要TX权限验证**：
+ *    - TxInput.is_reference_only = true
+ *    - UnlockingProof 必须匹配 ResourceOutput的LockingCondition
+ *    - 引用成功后UTXO保持在集合中
+ * 
+ * 3. **资源消费需要TX权限验证**：
+ *    - TxInput.is_reference_only = false
+ *    - UnlockingProof 必须匹配 ResourceOutput的LockingCondition
+ *    - 消费成功后UTXO从集合中移除
+ * 
+ * 🏗️ 层级设计（严格符合统一权利载体理论）：
+ * • 顶层分类：可执行资源 vs 静态资源（基于内容特征，非权利特征）
+ * • 可执行资源子类型：基于执行引擎（CONTRACT, AIMODEL等）
+ * • 静态资源：无子类型，由mime_type区分业务语义
+ * • 【重要】：分类基于内容能力，不基于权利性质！
+ * 
+ * 📋 完整的资源生命周期（由Transaction层控制）：
+ * ```
+ * 创建：N inputs (费用) + ResourceOutput 
+ *       → 需要证明有权支付费用
+ * 
+ * 引用：TxInput(is_reference_only=true) + 其他outputs
+ *       → 需要证明有权引用资源
+ *       → UTXO保持在集合中
+ * 
+ * 消费：TxInput(is_reference_only=false) + 新ResourceOutput
+ *       → 需要证明有权消费资源
+ *       → UTXO从集合中移除（转移/升级）
+ * ```
+ * 
+ * 🛡️ 验证约束（纯内容层面）：
+ * • content_hash: 必须是32字节SHA-256哈希
+ * • category与executable_type必须匹配（当且仅当 category=EXECUTABLE 时 executable_type 有效）
+ * • 不包含权利验证 - 这是Transaction层的职责！
+ * 
+ * 💡 理论映射：
+ * - Resource = 统一权利载体理论中的"内容载体"部分
+ * - 权利属性由Transaction层的EUTXO结构承载（LockingCondition/UnlockingProof）
+ * - 这种分离实现了完美的"内容"与"权利"解耦
+ * 
+ * 🎯 TX本质在资源场景的体现：
+ * **TX = 证明有权使用某些UTXO（输入权限） + 定义如何创建新UTXO（输出定义）**
+ * - 创建资源：证明有权支付 → 创建ResourceOutput
+ * - 引用资源：证明有权引用 → 保持ResourceOutput
+ * - 消费资源：证明有权消费 → 移除旧ResourceOutput + 创建新ResourceOutput
+ */
+message Resource {
+  // ========== 资源核心身份（内容载体部分）==========
+  ResourceCategory category = 1;           // 顶层分类：可执行 vs 静态
+  ExecutableType executable_type = 2;      // 可执行资源子类型（仅当category=EXECUTABLE时有效）
+  bytes content_hash = 3;                  // 内容SHA-256哈希（唯一身份标识）
+  string mime_type = 4;                    // 内容媒体类型（业务层语义）
+  uint64 size = 5;                         // 内容大小（字节）
+  
+  // ========== 资源元信息 ==========
+  string name = 10;                       // 资源显示名称（用户友好，可自定义）
+  string version = 11;                    // 版本标识
+  uint64 created_timestamp = 12;          // 创建时间戳
+  string creator_address = 13;            // 创建者地址
+  string description = 14;                // 资源描述
+  string original_filename = 15;          // 原始文件名（含扩展名，如 "协会简介中英双语.pdf"）
+  string file_extension = 16;             // 文件扩展名（如 ".pdf", ".wasm", ".onnx"）
+  
+  // ========== 执行引擎配置（仅可执行资源需要）==========
+  oneof execution_config {
+    ContractExecutionConfig contract = 100;    // 智能合约执行配置
+    AIModelExecutionConfig aimodel = 101;      // AI模型执行配置
+    // 静态资源无需执行配置
+  }
+  
+  // ========== 用户自定义属性（业务层扩展）==========
+  map<string, string> custom_attributes = 30; // 业务层自定义属性
+}
+
+// ████████████████████████████████████████████████████████████████████████████████████████████
+// 📋 ResourceReference 已删除 - 设计简化说明
+// ████████████████████████████████████████████████████████████████████████████████████████████
+//
+// 🎯 删除原因（经过深度分析的正确决策）：
+// 1. **字段重复率83%** - 与Resource结构高度重复，维护成本高
+// 2. **EUTXO原生引用** - TxInput.OutPoint已提供完整的引用能力
+// 3. **使用场景不合理** - 当前所有使用都违背了设计原则
+// 4. **协议简化** - 统一使用Resource，减少复杂度
+//
+// 🔄 替代方案：
+// • **UTXO引用**：TxInput.OutPoint → 精确定位ResourceOutput UTXO  
+// • **API响应**：应用层DTO提取Resource中需要的字段
+// • **客户端缓存**：使用content_hash作为缓存键，按需获取完整Resource
+//
+// 💡 设计哲学：
+// • 协议层保持最小必要复杂度
+// • 业务层根据需要提取和组合数据
+// • EUTXO的OutPoint机制已经提供了完美的引用能力
+// ████████████████████████████████████████████████████████████████████████████████████████████
+
+/**
+ * ContractExecutionConfig - 智能合约执行配置（对应contract engine）
+ * 
+ * 🎯 设计原则：只包含执行引擎所需的核心配置
+ * 
+ * ⚠️ 当前状态：定义已完成，execution层集成进行中
+ * - 该配置会在 internal/core/engines/wasm 中被使用
+ * - 目前业务代码还在适配新的ResourceOutput架构
+ * - 这是预设计的执行引擎配置接口，确保后续集成的一致性
+ */
+message ContractExecutionConfig {
+  string abi_version = 1;              // ABI版本
+  repeated string exported_functions = 2;   // 导出函数列表
+  map<string, string> execution_params = 10; // 执行参数（引擎特定）
+}
+
+/**
+ * AIModelExecutionConfig - AI模型执行配置（对应aimodel engine）
+ * 
+ * 🎯 设计原则：只包含执行引擎所需的核心配置
+ * 
+ * ⚠️ 当前状态：定义已完成，execution层集成进行中
+ * - 该配置会在 internal/core/engines/aimodel 中被使用
+ * - 目前业务代码还在适配新的ResourceOutput架构
+ * - 这是预设计的执行引擎配置接口，确保ONNX等模型的标准化执行
+ */
+message AIModelExecutionConfig {
+  string model_format = 1;            // 模型格式（ONNX, TensorFlow等）
+  repeated string input_names = 2;    // 输入张量名称
+  repeated string output_names = 3;   // 输出张量名称
+  map<string, string> execution_params = 10; // 执行参数（引擎特定）
+}
+
+
+
+ 

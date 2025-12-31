@@ -1,0 +1,41 @@
+{
+  "name": "example_big_compute/default",
+  "category": "edge-ok",
+  "kind": "onnx-model",
+  "description": "大计算量网络的基准部署与调用用例（使用缩小输入，主要验证资源可用性与链路完整性）",
+  "inputs": [
+    {
+      "name": "Input",
+      "kind": "tensor",
+      "dtype": "float32",
+      "shape": [1, 10000],
+      "field": "data",
+      "values": [
+        1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+        1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0
+      ]
+    }
+  ],
+  "expected_outputs": [
+    {
+      "index": 0,
+      "name": "Output",
+      "shape": [1, 52428800],
+      "dtype": "float32",
+      "match": "shape-only"
+    }
+  ],
+  "chain_expectations": {
+    "resource": {
+      "must_exist": true,
+      "category": "EXECUTABLE",
+      "executable_type": "AIMODEL"
+    }
+  },
+  "notes": [
+    "模型真实期望输入形状为 [1, 52428800]；本测试用例仅提供 [1, 10000] 作为缩小输入，用于验证部署与链路。",
+    "当引擎抛出与 Expected: 52428800 相关的维度错误时，`onnx_models_test.sh` 将其视为 Edge-OK：大模型资源可用，但未提供完整 52M 元素输入。"
+  ]
+}
+
+

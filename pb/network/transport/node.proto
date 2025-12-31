@@ -1,0 +1,73 @@
+syntax = "proto3";
+package pb.network.transport;
+
+option go_package = "github.com/weisyn/v1/pb/network/transport";
+
+// NodeInfo 节点基础信息
+message NodeInfo {
+  string id = 1;                 // 节点ID (base58编码的libp2p peer.ID)
+  string version = 2;            // 节点软件版本
+  repeated string protocols = 3; // 支持的协议
+  repeated string addresses = 4; // 节点地址列表 (multiaddr格式)
+  bytes network_id = 5;          // 网络ID
+}
+
+// NodeRole 节点角色枚举
+enum NodeRole {
+  ROLE_UNKNOWN = 0;
+  ROLE_FULL_NODE = 1;      // 全节点
+  ROLE_LIGHT_NODE = 2;     // 轻节点
+  ROLE_BOOTSTRAP = 3;      // 引导节点
+  ROLE_RELAY = 4;          // 中继节点
+  ROLE_VALIDATOR = 5;      // 验证节点
+  ROLE_ARCHIVE = 6;        // 归档节点
+}
+
+// NodeCapabilities 节点能力
+message NodeCapabilities {
+  repeated NodeRole roles = 1;          // 节点角色
+  repeated string supported_protocols = 2; // 支持的协议
+}
+
+// PeerInfo 对等节点信息
+message PeerInfo {
+  string id = 1;                 // 节点ID (base58编码的libp2p peer.ID)
+  repeated string addresses = 2;  // 地址列表 (multiaddr格式)
+  NodeCapabilities capabilities = 3; // 节点能力
+  string direction = 4;          // 连接方向 ("inbound" 或 "outbound")
+  int64 latency_ms = 5;          // 延迟(毫秒)
+  bool is_trusted = 6;           // 是否是可信节点
+  uint64 connected_time = 7;     // 连接时间
+  uint64 last_seen = 8;          // 最后可见时间
+  string version = 9;            // 软件版本
+  map<string, string> metadata = 10; // 附加元数据
+}
+
+// 以下消息定义用于P2P网络服务API，未来应移至专门的服务定义文件
+
+// PeerListRequest 节点列表请求
+message PeerListRequest {
+  int32 max_peers = 1;          // 返回的最大节点数
+  repeated string capabilities = 2; // 过滤的能力
+  bool include_self = 3;        // 是否包含自己
+}
+
+// PeerListResponse 节点列表响应
+message PeerListResponse {
+  repeated PeerInfo peers = 1;  // 节点列表
+  NodeInfo self = 2;           // 本节点信息
+  int32 total_peers = 3;       // 总节点数
+}
+
+// BanPeerRequest 禁止节点请求
+message BanPeerRequest {
+  string peer_id = 1;          // 节点ID
+  uint64 duration = 2;         // 禁止时长(秒)，0表示永久
+  string reason = 3;           // 禁止原因
+}
+
+// BanPeerResponse 禁止节点响应
+message BanPeerResponse {
+  bool success = 1;            // 是否成功
+  string message = 2;          // 结果消息
+} 

@@ -1,0 +1,13 @@
+{
+  "name": "valid_payload_example",
+  "type": "payload",
+  "description": "符合 WES ABI 规范的 Payload 示例",
+  "payload": {
+    "from": "0x1234567890123456789012345678901234567890",
+    "to": "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd",
+    "amount": "1000000",
+    "token_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "custom_field": "custom_value"
+  }
+}
+

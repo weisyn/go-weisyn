@@ -21,6 +21,8 @@ __          ________ _____  _______     ___   _
 [![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey.svg)]()
 [![Status](https://img.shields.io/badge/Status-Public%20Beta-orange.svg)]()
 
+<sub>📊 Codebase: 398K lines of Go code</sub>
+
 [🚀 Quick Start](#-30-second-getting-started) • [💡 Core Breakthrough](#-core-capabilities) • [📖 Documentation](#-documentation-navigation)
 
 </div>
@@ -273,15 +275,15 @@ make build-dev
 ./bin/development --api-only
 
 # Get chain information
-curl http://localhost:8080/api/v1/info | jq .
+curl http://localhost:28680/api/v1/info | jq .
 
 # Start mining
-curl -X POST http://localhost:8080/api/v1/mining/start \
+curl -X POST http://localhost:28680/api/v1/mining/start \
   -H 'Content-Type: application/json' \
   -d '{"miner_address": "<your_address>"}'
 ```
 
-> 📖 **Complete Guide**: [Quick Start Guide](./docs/README.md) | [Application Examples](./examples/README.md)
+> 📖 **Complete Guide**: [Documentation Center](./docs/en/README.md) | [Quick Start Guide](./docs/en/getting-started/quickstart-local.md) | [Application Examples](./examples/README.md)
 
 ---
 
@@ -360,24 +362,26 @@ Want to learn more about WES? Here's documentation navigation organized by role:
 ### 🎯 Navigation by Role
 
 **👨‍💻 Developers**
-- [Quick Start](#-30-second-getting-started) → [Application Examples](./examples/README.md) → [Smart Contract Development](./contracts/README.md)
+- [Quick Start](./docs/en/getting-started/quickstart-local.md) → [Tutorials](./docs/en/tutorials/) → [Smart Contract Development](./contracts/README.md)
 
 **🏗️ Architects**
-- [System Architecture](./docs/system/architecture/README.md) → [ISPC Technology](./docs/components/core/ispc/README.md)
+- [System Architecture](./docs/en/concepts/architecture-overview.md) → [ISPC Technology](./docs/en/concepts/ispc.md) → [EUTXO / URES / Consensus](./docs/en/concepts/)
 
 **💼 Investors/Partners**
-- [Project Overview](./docs/overview.md) → [Market Positioning](./docs/system/positioning.md)
+- [What is WES](./docs/en/concepts/what-is-wes.md) → [Architecture Overview](./docs/en/concepts/architecture-overview.md) → [Core Innovations](./docs/en/concepts/)
 
 **🏢 Enterprise Users**
-- [Application Scenarios](#-core-capabilities) → [Market Positioning](./docs/system/positioning.md)
+- [Application Scenarios](#-core-capabilities) → [Scenario Practices](./docs/en/tutorials/scenarios/) → [ISPC Concept](./docs/en/concepts/ispc.md)
 
 ### 📘 Core Documents
 
 | Document | Description |
 |----------|-------------|
-| ⭐ [Project Overview](./docs/overview.md) | Complete strategic positioning and value proposition |
-| 🏗️ [System Architecture](./docs/system/architecture/README.md) | Five-view architecture details |
-| 🔬 [ISPC Technology](./docs/components/core/ispc/README.md) | Verifiable computing paradigm details |
+| [Documentation Center](./docs/en/README.md) | Complete English documentation portal (Getting Started / Concepts / Tutorials / Guides / Reference) |
+| [What is WES](./docs/en/concepts/what-is-wes.md) | Strategic positioning and core values |
+| [Architecture Overview](./docs/en/concepts/architecture-overview.md) | System architecture overview and module boundaries |
+| [ISPC](./docs/en/concepts/ispc.md) | Verifiable computing paradigm and execution model |
+| [EUTXO](./docs/en/concepts/eutxo.md) | EUTXO representation and constraints for state and resources |
 
 ---
 
@@ -443,11 +447,11 @@ go version    # Requires >= 1.19
 
 ### Node Startup Failures
 ```bash
-netstat -tulpn | grep :8080  # Check port usage
+netstat -tulpn | grep :28680  # Check port usage
 ./bin/development --verbose   # View detailed logs
 ```
 
-> 📖 **Complete Troubleshooting**: [Developer Documentation](./docs/README.md) | [GitHub Issues](https://github.com/weisyn/weisyn/issues)
+> 📖 **Complete Troubleshooting**: [Documentation Center](./docs/en/README.md) | [Getting Started FAQ](./docs/en/getting-started/faq.md) | [GitHub Issues](https://github.com/weisyn/weisyn/issues)
 
 ---
 
@@ -461,7 +465,7 @@ This project is open source under the MIT License - see the [LICENSE](LICENSE) f
 
 ### Defining the Verifiable Computing Paradigm for Blockchain, Enabling Decentralized Intelligence in the AI Era
 
-[Get Started](#-30-second-getting-started) • [Join Community](https://discord.gg/weisyn) • [View Documentation](./docs/overview.md)
+[Get Started](#-30-second-getting-started) • [Join Community](https://discord.gg/weisyn) • [View Documentation](./docs/en/README.md)
 
 Made with ❤️ by the WES Team
 

@@ -1,0 +1,321 @@
+syntax = "proto3";
+package pb.network.protocol;
+
+option go_package = "github.com/weisyn/v1/pb/network/protocol";
+
+/**
+ * ████████████████████████████████████████████████████████████████████████████████████████████
+ * 🧪 WES测试网络管理协议 - 内部开发专用
+ * ████████████████████████████████████████████████████████████████████████████████████████████
+ *
+ * 本协议定义WES系统中测试网络管理的内部消息格式，专门用于开发阶段的网络清理、
+ * 重置和一致性管理。这些协议不对外暴露，仅供项目方内部使用。
+ *
+ * 🎯 核心功能：
+ * • 测试网络重置：协调全网节点进行数据清理和重置
+ * • 数据一致性检查：识别和修复网络中的数据不一致
+ * • 网络健康监控：提供网络状态和性能指标
+ * • 会话管理：支持独立的测试会话和状态隔离
+ *
+ * 📡 协议映射：
+ * • 网络重置广播：/weisyn/internal/test_reset/1.0.0 (Stream RPC)
+ * • 一致性检查：/weisyn/internal/consistency_check/1.0.0 (Request-Response)
+ * • 健康检查：/weisyn/internal/health_check/1.0.0 (Request-Response)
+ * • 会话协调：weisyn.internal.test_session.v1 (GossipSub Topic)
+ *
+ * 🛡️ 安全注意：
+ * • 仅限内部网络使用，不应暴露给外部
+ * • 包含管理员签名验证机制
+ * • 支持会话隔离和权限控制
+ * • 具备审计日志和操作记录
+ *
+ * 🔄 典型流程：
+ * 1. 开发者触发重置 → 生成重置消息 → 广播到网络节点
+ * 2. 各节点接收重置消息 → 验证权限 → 执行本地清理
+ * 3. 清理完成 → 重新加入网络 → 报告状态
+ * 4. 协调者确认全网重置 → 启动新测试会话
+ * ████████████████████████████████████████████████████████████████████████████████████████████
+ */
+
+// ================================================================
+//                        测试网络重置协议
+// ================================================================
+
+// TestNetworkResetMessage 测试网络重置消息
+// 用于协调全网节点执行数据清理和重置操作
+message TestNetworkResetMessage {
+    // 重置标识和基本信息
+    string reset_id = 1;           // 唯一重置标识符（如：reset-20241201-001）
+    uint64 reset_height = 2;       // 重置到的区块高度（0=完全重置）
+    string reset_reason = 3;       // 重置原因描述
+    uint64 timestamp = 4;          // 重置时间戳（Unix时间）
+    
+    // 重置选项和控制
+    bool force_reset = 5;          // 强制重置标志
+    bool keep_config = 6;          // 保留配置文件标志
+    bool backup_before_reset = 7;  // 重置前备份标志
+    repeated string exclude_patterns = 8; // 排除的数据模式
+    
+    // 权限和验证
+    string source_peer_id = 9;     // 发起重置的节点ID
+    bytes admin_signature = 10;    // 管理员数字签名
+    string session_token = 11;     // 会话令牌
+    
+    // 协调和同步
+    uint32 reset_sequence = 12;    // 重置序号（防重放）
+    uint64 coordination_timeout = 13; // 协调超时时间（秒）
+    bool require_confirmation = 14; // 是否需要确认响应
+}
+
+// TestNetworkResetResponse 测试网络重置响应
+// 节点对重置消息的响应确认
+message TestNetworkResetResponse {
+    string reset_id = 1;           // 对应的重置ID
+    string responding_peer_id = 2; // 响应节点ID
+    ResetStatus status = 3;        // 重置状态
+    string message = 4;            // 状态消息
+    uint64 response_timestamp = 5; // 响应时间戳
+    
+    // 重置结果详情
+    ResetExecutionResult execution_result = 6; // 执行结果
+    uint64 cleanup_duration_ms = 7;           // 清理耗时（毫秒）
+    repeated string cleaned_paths = 8;        // 已清理的路径
+    repeated string error_messages = 9;       // 错误信息列表
+}
+
+// ResetStatus 重置状态枚举
+enum ResetStatus {
+    RESET_STATUS_UNKNOWN = 0;      // 未知状态
+    RESET_STATUS_ACCEPTED = 1;     // 已接受重置请求
+    RESET_STATUS_IN_PROGRESS = 2;  // 重置进行中
+    RESET_STATUS_COMPLETED = 3;    // 重置完成
+    RESET_STATUS_FAILED = 4;       // 重置失败
+    RESET_STATUS_REJECTED = 5;     // 重置被拒绝
+    RESET_STATUS_TIMEOUT = 6;      // 重置超时
+}
+
+// ResetExecutionResult 重置执行结果
+message ResetExecutionResult {
+    bool success = 1;              // 是否成功
+    uint64 blocks_removed = 2;     // 删除的区块数
+    uint64 data_size_freed = 3;    // 释放的数据大小（字节）
+    string backup_path = 4;        // 备份路径（如果创建了备份）
+    bool network_reconnected = 5;  // 是否重新连接网络
+}
+
+// ================================================================
+//                        网络一致性检查协议
+// ================================================================
+
+// NetworkConsistencyCheckRequest 网络一致性检查请求
+message NetworkConsistencyCheckRequest {
+    string check_id = 1;           // 检查ID
+    string requester_peer_id = 2;  // 请求者节点ID
+    uint32 check_depth = 3;        // 检查深度（区块数）
+    uint64 base_height = 4;        // 基准高度
+    repeated string target_peer_ids = 5; // 目标检查节点（空=所有节点）
+    uint64 check_timeout = 6;      // 检查超时时间
+    bool include_block_hashes = 7; // 是否包含区块哈希
+}
+
+// NetworkConsistencyCheckResponse 网络一致性检查响应
+message NetworkConsistencyCheckResponse {
+    string check_id = 1;           // 对应的检查ID
+    string responding_peer_id = 2; // 响应节点ID
+    NodeConsistencyState node_state = 3; // 节点状态
+    uint64 response_timestamp = 4; // 响应时间戳
+}
+
+// NodeConsistencyState 节点一致性状态
+message NodeConsistencyState {
+    string peer_id = 1;            // 节点ID
+    uint64 current_height = 2;     // 当前区块高度
+    string latest_block_hash = 3;  // 最新区块哈希
+    repeated BlockHashInfo block_hashes = 4; // 区块哈希列表
+    NodeHealthStatus health_status = 5;      // 健康状态
+    uint64 last_update_time = 6;   // 最后更新时间
+    repeated string issues = 7;     // 发现的问题
+}
+
+// BlockHashInfo 区块哈希信息
+message BlockHashInfo {
+    uint64 height = 1;             // 区块高度
+    string block_hash = 2;         // 区块哈希
+    uint64 timestamp = 3;          // 区块时间戳
+    uint32 transaction_count = 4;  // 交易数量
+}
+
+// NodeHealthStatus 节点健康状态枚举
+enum NodeHealthStatus {
+    HEALTH_STATUS_UNKNOWN = 0;     // 未知状态
+    HEALTH_STATUS_HEALTHY = 1;     // 健康
+    HEALTH_STATUS_WARNING = 2;     // 有警告
+    HEALTH_STATUS_ERROR = 3;       // 有错误
+    HEALTH_STATUS_CRITICAL = 4;    // 严重问题
+    HEALTH_STATUS_OFFLINE = 5;     // 离线
+}
+
+// ================================================================
+//                        测试会话管理协议
+// ================================================================
+
+// TestSessionMessage 测试会话消息
+// 用于管理独立的测试会话和状态同步
+message TestSessionMessage {
+    SessionMessageType message_type = 1; // 消息类型
+    string session_id = 2;         // 会话ID
+    string source_peer_id = 3;     // 源节点ID
+    uint64 timestamp = 4;          // 时间戳
+    
+    oneof content {
+        SessionStartRequest session_start = 5;    // 会话启动请求
+        SessionJoinRequest session_join = 6;      // 加入会话请求
+        SessionStatusUpdate session_status = 7;   // 会话状态更新
+        SessionEndNotification session_end = 8;   // 会话结束通知
+    }
+}
+
+// SessionMessageType 会话消息类型
+enum SessionMessageType {
+    SESSION_MESSAGE_UNKNOWN = 0;   // 未知消息
+    SESSION_MESSAGE_START = 1;     // 启动会话
+    SESSION_MESSAGE_JOIN = 2;      // 加入会话
+    SESSION_MESSAGE_STATUS = 3;    // 状态更新
+    SESSION_MESSAGE_END = 4;       // 结束会话
+    SESSION_MESSAGE_SYNC = 5;      // 同步请求
+}
+
+// SessionStartRequest 会话启动请求
+message SessionStartRequest {
+    string session_name = 1;       // 会话名称
+    string description = 2;        // 会话描述
+    bool clean_before_start = 3;   // 启动前清理
+    repeated string participant_peer_ids = 4; // 参与者节点ID
+    map<string, string> session_config = 5;   // 会话配置
+}
+
+// SessionJoinRequest 加入会话请求
+message SessionJoinRequest {
+    string session_id = 1;         // 要加入的会话ID
+    string peer_id = 2;            // 请求加入的节点ID
+    string join_reason = 3;        // 加入原因
+}
+
+// SessionStatusUpdate 会话状态更新
+message SessionStatusUpdate {
+    string session_id = 1;         // 会话ID
+    SessionStatus status = 2;      // 会话状态
+    map<string, string> status_data = 3; // 状态数据
+    repeated string active_peers = 4;     // 活跃节点列表
+}
+
+// SessionEndNotification 会话结束通知
+message SessionEndNotification {
+    string session_id = 1;         // 会话ID
+    string end_reason = 2;         // 结束原因
+    bool success = 3;              // 是否成功
+    SessionReport session_report = 4; // 会话报告
+}
+
+// SessionStatus 会话状态枚举
+enum SessionStatus {
+    SESSION_STATUS_UNKNOWN = 0;    // 未知状态
+    SESSION_STATUS_STARTING = 1;   // 启动中
+    SESSION_STATUS_ACTIVE = 2;     // 活跃中
+    SESSION_STATUS_PAUSED = 3;     // 已暂停
+    SESSION_STATUS_ENDING = 4;     // 结束中
+    SESSION_STATUS_COMPLETED = 5;  // 已完成
+    SESSION_STATUS_FAILED = 6;     // 失败
+}
+
+// SessionReport 会话报告
+message SessionReport {
+    string session_id = 1;         // 会话ID
+    uint64 start_time = 2;         // 开始时间
+    uint64 end_time = 3;           // 结束时间
+    uint64 duration_seconds = 4;   // 持续时间（秒）
+    uint32 participant_count = 5;  // 参与者数量
+    repeated string achievements = 6; // 完成的任务
+    repeated string issues = 7;    // 遇到的问题
+    map<string, string> metrics = 8; // 指标数据
+}
+
+// ================================================================
+//                        网络健康监控协议
+// ================================================================
+
+// NetworkHealthCheckRequest 网络健康检查请求
+message NetworkHealthCheckRequest {
+    string check_id = 1;           // 检查ID
+    string requester_peer_id = 2;  // 请求者节点ID
+    repeated HealthCheckType check_types = 3; // 检查类型
+    uint64 check_timeout = 4;      // 检查超时
+}
+
+// NetworkHealthCheckResponse 网络健康检查响应
+message NetworkHealthCheckResponse {
+    string check_id = 1;           // 对应的检查ID
+    string responding_peer_id = 2; // 响应节点ID
+    NetworkHealthReport health_report = 3; // 健康报告
+    uint64 response_timestamp = 4; // 响应时间戳
+}
+
+// HealthCheckType 健康检查类型
+enum HealthCheckType {
+    HEALTH_CHECK_UNKNOWN = 0;      // 未知检查
+    HEALTH_CHECK_NETWORK = 1;      // 网络连接检查
+    HEALTH_CHECK_BLOCKCHAIN = 2;   // 区块链状态检查
+    HEALTH_CHECK_STORAGE = 3;      // 存储状态检查
+    HEALTH_CHECK_PERFORMANCE = 4;  // 性能指标检查
+    HEALTH_CHECK_CONSENSUS = 5;    // 共识状态检查
+}
+
+// NetworkHealthReport 网络健康报告
+message NetworkHealthReport {
+    string peer_id = 1;            // 节点ID
+    NodeHealthStatus overall_status = 2;  // 总体状态
+    repeated HealthCheckResult check_results = 3; // 检查结果
+    NetworkMetrics network_metrics = 4;          // 网络指标
+    BlockchainMetrics blockchain_metrics = 5;    // 区块链指标
+    PerformanceMetrics performance_metrics = 6;  // 性能指标
+    uint64 report_timestamp = 7;   // 报告时间戳
+}
+
+// HealthCheckResult 健康检查结果
+message HealthCheckResult {
+    HealthCheckType check_type = 1; // 检查类型
+    bool passed = 2;               // 是否通过
+    string message = 3;            // 检查消息
+    double score = 4;              // 评分（0-100）
+    map<string, string> details = 5; // 详细信息
+}
+
+// NetworkMetrics 网络指标
+message NetworkMetrics {
+    uint32 connected_peers = 1;    // 连接的节点数
+    uint32 active_connections = 2; // 活跃连接数
+    double average_latency_ms = 3; // 平均延迟（毫秒）
+    uint64 bytes_sent = 4;         // 发送字节数
+    uint64 bytes_received = 5;     // 接收字节数
+    double message_throughput = 6;  // 消息吞吐量（msg/s）
+}
+
+// BlockchainMetrics 区块链指标
+message BlockchainMetrics {
+    uint64 current_height = 1;     // 当前高度
+    uint64 last_block_time = 2;    // 最后区块时间
+    double average_block_time = 3; // 平均出块时间
+    uint32 pending_transactions = 4; // 待处理交易数
+    bool sync_status = 5;          // 同步状态
+    double chain_progress = 6;     // 链同步进度（0-100%）
+}
+
+// PerformanceMetrics 性能指标
+message PerformanceMetrics {
+    double cpu_usage_percent = 1;  // CPU使用率
+    double memory_usage_percent = 2; // 内存使用率
+    uint64 disk_usage_bytes = 3;   // 磁盘使用量
+    double network_io_mbps = 4;    // 网络IO速率
+    uint32 goroutine_count = 5;    // 协程数量
+    double gc_pause_ms = 6;        // GC暂停时间
+}

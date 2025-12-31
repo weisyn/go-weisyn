@@ -1,0 +1,46 @@
+{
+  "name": "sklearn_randomforest/default",
+  "category": "strict-pass",
+  "kind": "onnx-model",
+  "description": "Iris 分类模型的基准预测用例（与 onnxruntime_go 示例一致）",
+  "inputs": [
+    {
+      "name": "X",
+      "kind": "tensor",
+      "dtype": "float32",
+      "shape": [1, 4],
+      "field": "data",
+      "values": [5.1, 3.5, 1.4, 0.2]
+    }
+  ],
+  "expected_outputs": [
+    {
+      "index": 0,
+      "name": "output_label",
+      "shape": [1],
+      "dtype": "int64",
+      "sample": [0],
+      "match": "prefix"
+    },
+    {
+      "index": 1,
+      "name": "output_probability",
+      "shape": [],
+      "dtype": "map",
+      "match": "shape-only"
+    }
+  ],
+  "chain_expectations": {
+    "resource": {
+      "must_exist": true,
+      "category": "EXECUTABLE",
+      "executable_type": "AIMODEL"
+    }
+  },
+  "notes": [
+    "第二个输出为 Map 类型，在脚本中只检查存在性和类型，不做数值断言。",
+    "部署与调用行为应通过 JSON-RPC `wes_deployAIModel` / `wes_callAIModel` 和链上查询 `wes_getResourceByContentHash` 验证。"
+  ]
+}
+
+

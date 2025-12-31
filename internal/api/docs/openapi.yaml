@@ -1,0 +1,331 @@
+openapi: 3.0.3
+info:
+  title: WES Chain Node API
+  description: |
+    WES区块链节点的RESTful API接口。
+    
+    本API遵循区块链行业标准，提供：
+    - 区块和交易查询
+    - 交易提交（客户端签名）
+    - 状态查询（支持状态锚定）
+    - SPV轻客户端支持
+    - Mempool策略查询
+  version: v1.0.0
+  contact:
+    name: WES Team
+    url: https://weisyn.io
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+
+servers:
+  - url: http://localhost:28680/api/v1
+    description: 本地开发服务器
+  - url: https://api.weisyn.io/api/v1
+    description: 生产服务器
+
+tags:
+  - name: blocks
+    description: 区块查询接口
+  - name: transactions
+    description: 交易查询和提交接口
+  - name: accounts
+    description: 账户状态查询接口
+  - name: spv
+    description: SPV轻客户端接口
+  - name: txpool
+    description: 交易池和策略接口
+  - name: health
+    description: 健康检查接口
+
+paths:
+  /blocks/{height}:
+    get:
+      tags:
+        - blocks
+      summary: 查询指定高度的区块
+      description: |
+        按区块高度查询区块详情。
+        
+        **状态锚定**: 此接口支持状态锚定查询，响应中包含查询时的状态锚点信息。
+      operationId: getBlockByHeight
+      parameters:
+        - name: height
+          in: path
+          required: true
+          description: 区块高度
+          schema:
+            type: integer
+            format: uint64
+            example: 12345
+      responses:
+        '200':
+          description: 成功返回区块信息
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Block'
+        '404':
+          description: 区块不存在
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error:
+                  code: "BLOCK_NOT_FOUND"
+                  message: "Block not found at height 12345"
+
+  /transactions:
+    post:
+      tags:
+        - transactions
+      summary: 提交已签名交易
+      description: |
+        提交已在客户端签名的交易到内存池。
+        
+        **安全模型**: 此接口仅接受已签名交易，不接受私钥。节点验证签名后加入内存池。
+      operationId: submitTransaction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - signedTx
+              properties:
+                signedTx:
+                  type: string
+                  description: 十六进制编码的已签名交易
+                  example: "0xf86c808504a817c800825208..."
+      responses:
+        '200':
+          description: 交易已接受
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  txHash:
+                    type: string
+                    example: "0xabc123..."
+                  status:
+                    type: string
+                    enum: [pending]
+                    example: "pending"
+        '400':
+          description: 交易被拒绝
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error:
+                  code: "TX_FEE_TOO_LOW"
+                  message: "Transaction fee too low"
+                  details:
+                    providedFeeRate: "500"
+                    minRequiredFeeRate: "1000"
+                    unit: "sat/byte"
+
+  /spv/tx/{hash}/proof:
+    get:
+      tags:
+        - spv
+      summary: 获取交易的SPV Merkle证明
+      description: |
+        返回指定交易的Merkle路径证明，用于轻客户端验证交易是否包含在区块中。
+      operationId: getTxProof
+      parameters:
+        - name: hash
+          in: path
+          required: true
+          description: 交易哈希
+          schema:
+            type: string
+            example: "0xabc123..."
+      responses:
+        '200':
+          description: 成功返回Merkle证明
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerkleProof'
+
+  /txpool/policy:
+    get:
+      tags:
+        - txpool
+      summary: 查询交易池策略
+      description: |
+        返回节点的交易池策略参数，用于客户端估算交易费用和了解提交要求。
+      operationId: getTxPoolPolicy
+      responses:
+        '200':
+          description: 成功返回策略
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TxPoolPolicy'
+
+  /health:
+    get:
+      tags:
+        - health
+      summary: 完整健康检查
+      description: |
+        返回节点的完整健康状态，包括所有组件的状态和性能指标。
+      operationId: getHealth
+      responses:
+        '200':
+          description: 节点健康
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+
+  /health/live:
+    get:
+      tags:
+        - health
+      summary: 存活检查（Liveness）
+      description: |
+        Kubernetes风格的存活检查。仅检查进程是否响应。
+      operationId: getLiveness
+      responses:
+        '200':
+          description: 存活
+        '503':
+          description: 不可用
+
+  /health/ready:
+    get:
+      tags:
+        - health
+      summary: 就绪检查（Readiness）
+      description: |
+        Kubernetes风格的就绪检查。检查节点是否已同步且可对外服务。
+      operationId: getReadiness
+      responses:
+        '200':
+          description: 就绪
+        '503':
+          description: 未就绪
+
+components:
+  schemas:
+    Block:
+      type: object
+      properties:
+        height:
+          type: integer
+          format: uint64
+          description: 区块高度
+        hash:
+          type: string
+          description: 区块哈希
+        parentHash:
+          type: string
+          description: 父区块哈希
+        timestamp:
+          type: integer
+          format: int64
+          description: 时间戳
+        stateRoot:
+          type: string
+          description: 状态根
+        txCount:
+          type: integer
+          description: 交易数量
+        transactions:
+          type: array
+          items:
+            type: string
+          description: 交易哈希列表
+
+    MerkleProof:
+      type: object
+      properties:
+        txHash:
+          type: string
+          description: 交易哈希
+        blockHash:
+          type: string
+          description: 区块哈希
+        blockHeight:
+          type: integer
+          format: uint64
+          description: 区块高度
+        merkleRoot:
+          type: string
+          description: Merkle根
+        merkleProof:
+          type: array
+          items:
+            type: string
+          description: Merkle路径
+        index:
+          type: integer
+          description: 交易在区块中的索引
+
+    TxPoolPolicy:
+      type: object
+      properties:
+        minRelayFee:
+          type: string
+          description: 最小中继费率（sat/byte）
+        minTip:
+          type: string
+          description: 最小小费
+        maxTxSize:
+          type: integer
+          description: 最大交易大小（bytes）
+        maxTxCount:
+          type: integer
+          description: 最大交易数量
+        evictionPolicy:
+          type: string
+          enum: [fee_rate, age]
+          description: 驱逐策略
+
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, degraded, unhealthy]
+        liveness:
+          type: string
+          enum: [ok, failed]
+        readiness:
+          type: string
+          enum: [ready, not_ready]
+        version:
+          type: string
+        uptime:
+          type: string
+        components:
+          type: object
+          additionalProperties:
+            type: object
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: 错误码
+            message:
+              type: string
+              description: 错误消息
+            details:
+              type: object
+              description: 详细信息
+            requestId:
+              type: string
+              description: 请求ID
+

@@ -1,0 +1,190 @@
+{
+  "_comment": "WES 官方私有链配置（本地开发网络 dev-private-local）",
+  "_version": "1.0.0",
+  "_note": "⚠️ 此文件描述了一条官方本地开发私有链网络（dev-private-local），可直接用于本地开发/测试。生产级内部账本请复制本配置并根据实际需求调整。",
+  "_usage": "可以直接作为 dev-private-local 私有链网络的配置文件使用；要创建属于自己的私有链实例，请复制本文件并修改 network/genesis/security 等字段。⚠️ 至少必须修改：chain_id、network_id、network_namespace、genesis.accounts。详细说明请见 configs/chains/README.md 中「dev-private-local」小节。",
+  
+  "environment": "dev",
+  "_comment_environment": "运行环境：枚举值，固定为 dev（开发环境），该示例网络设计用于本地开发/测试；复制本配置创建新私有链时，可按需调整为 test 或 prod",
+  
+  "network": {
+    "_comment": "网络配置：定义链的身份标识（chain_id、network_id、network_namespace、chain_mode），官方本地开发私有链的链级身份",
+    "chain_id": 10001,
+    "_comment_chain_id": "链ID：整数类型，dev-private-local 的 chain_id（10001），范围 10000-19999（私有链），复制本配置创建新私有链时请在范围内选择未占用的 ID",
+    "network_id": "WES_dev_local",
+    "_comment_network_id": "网络标识符：字符串，本地开发私有链网络标识符，格式 WES_<type>_<name>，复制本配置创建新私有链时请修改为新的唯一标识符",
+    "network_name": "WES_private_dev_local_2024",
+    "_comment_network_name": "网络名称：字符串，本地开发私有链网络名称，复制本配置创建新私有链时请修改为新的网络名称",
+    "network_namespace": "private-local-dev",
+    "_comment_network_namespace": "网络命名空间：字符串，本地开发私有链的 network_namespace（用于 P2P/Gossip/DHT 网络隔离），复制本配置创建新私有链时请分配新的 namespace",
+    "chain_mode": "private",
+    "_comment_chain_mode": "链模式：枚举值，固定为 private（私有链）"
+  },
+  
+  "genesis": {
+    "_comment": "创世配置：定义链的初始状态（timestamp、accounts），本地开发账户与初始余额，生产环境请替换为真实账户并移除私钥字段。⚠️ dev 环境可省略 expected_genesis_hash（宽松策略），test/prod 环境建议必须配置",
+    "timestamp": 1700000000,
+    "_comment_timestamp": "创世时间戳：整数类型，Unix 时间戳（秒），所有节点必须使用相同值，复制本配置创建新私有链时请设置为实际的创世时间戳",
+    "_comment_expected_genesis_hash": "预期创世哈希：dev 环境可省略，test/prod 环境建议必须配置。如需配置，使用工具计算：go run cmd/tools/calculate-genesis-hash/main.go configs/chains/dev-private-local.json",
+    "accounts": [
+      {
+        "_comment": "账户项：定义创世账户信息（name、address、initial_balance），示例开发账户 1，生产环境请替换为真实账户并移除私钥字段",
+        "name": "Dev-Account-1",
+        "_comment_name": "账户名称：字符串，账户标识名称，复制本配置创建新私有链时请修改为实际的账户名称",
+        "address": "CUQ3g6P5WmFN289pPn7AAhnQ3T2cZRv2BR",
+        "_comment_address": "账户地址：字符串，账户区块链地址，复制本配置创建新私有链时请修改为实际的账户地址",
+        "initial_balance": "100000000000000000",
+        "_comment_initial_balance": "初始余额：字符串，账户初始余额（BaseUnit单位，1 WES = 10^8 BaseUnit）"
+      },
+      {
+        "_comment": "账户项：定义创世账户信息（name、address、initial_balance），示例开发账户 2，可按需扩展更多账户",
+        "name": "Dev-Account-2",
+        "_comment_name": "账户名称：字符串，账户标识名称，复制本配置创建新私有链时请修改为实际的账户名称",
+        "address": "CWb1owGnpUaB2JoQPhohpa81Cz9aiqikZG",
+        "_comment_address": "账户地址：字符串，账户区块链地址，复制本配置创建新私有链时请修改为实际的账户地址",
+        "initial_balance": "100000000000000000",
+        "_comment_initial_balance": "初始余额：字符串，账户初始余额（BaseUnit单位，1 WES = 10^8 BaseUnit）"
+      }
+    ],
+    "_comment_accounts": "创世账户列表：对象数组，定义链的初始账户和余额分配，至少包含一个账户，必需字段"
+  },
+  
+  "sync": {
+    "_comment": "同步配置：定义节点启动时的同步策略，控制是从本地创世还是从网络获取已有区块。⚠️ dev 环境宽松策略：可省略 require_trusted_checkpoint 和 trusted_checkpoint",
+    "startup_mode": "from_genesis",
+    "_comment_startup_mode": "启动同步模式：from_genesis 表示节点从本地创世块启动，适用于本地单节点私有链开发/测试；在多节点内部账本或生产环境中建议改为 from_network 或使用快照方案。注意：此字段只决定\"从哪儿开始同步\"（from_genesis/from_network），不决定 full/light 模式；所有节点默认是 full，同步模式调整通过运行时 API 完成（POST /node/sync_mode）",
+    "require_trusted_checkpoint": false,
+    "_comment_require_trusted_checkpoint": "是否强制要求配置受信任检查点：dev 环境默认 false（宽松策略），test/prod 环境建议设为 true",
+    "trusted_checkpoint": null,
+    "_comment_trusted_checkpoint": "受信任检查点：dev 环境可省略，test/prod 环境建议配置"
+  },
+  
+  "environment": "dev",
+  "_comment_environment": "运行环境：枚举值，dev（开发）、test（测试）、prod（生产）。dev 环境采用宽松策略（可省略 expected_genesis_hash 和 checkpoint），test/prod 环境采用严格策略。",
+  
+  "api": {
+    "_comment": "API 配置：定义 HTTP/gRPC API 服务配置",
+    "http_enabled": true,
+    "_comment_http_enabled": "启用 HTTP API：布尔值，true 启用 HTTP API 服务，false 禁用，默认 true",
+    "http_port": 28680,
+    "_comment_http_port": "HTTP 端口：整数类型，HTTP API 监听端口，范围 1024-65535，默认 28680（WES 端口规范）。可通过命令行参数 --http-port 覆盖（节点级配置，不影响链级配置）",
+    "http_enable_rest": true,
+    "_comment_http_enable_rest": "启用 REST API：布尔值，true 启用 REST 接口，false 禁用，默认 true",
+    "http_enable_jsonrpc": true,
+    "_comment_http_enable_jsonrpc": "启用 JSON-RPC API：布尔值，true 启用 JSON-RPC 接口，false 禁用，默认 true",
+    "http_enable_websocket": true,
+    "_comment_http_enable_websocket": "启用 WebSocket API：布尔值，true 启用 WebSocket 接口，false 禁用，默认 true",
+    "http_cors_enabled": true,
+    "_comment_http_cors_enabled": "启用 CORS：布尔值，true 启用跨域资源共享，false 禁用，默认 true",
+    "http_cors_origins": ["*"],
+    "_comment_http_cors_origins": "CORS 源：字符串数组，允许的跨域来源，默认 [\"*\"] 允许所有来源",
+    "grpc_enabled": true,
+    "_comment_grpc_enabled": "启用 gRPC API：布尔值，true 启用 gRPC 服务，false 禁用，默认 true",
+    "grpc_port": 28682,
+    "_comment_grpc_port": "gRPC 端口：整数类型，gRPC API 监听端口，范围 1024-65535，默认 28682（WES 端口规范）。可通过命令行参数 --grpc-port 覆盖（节点级配置，不影响链级配置）",
+    "enable_mining_api": true,
+    "_comment_enable_mining_api": "启用挖矿 API：布尔值，true 启用挖矿相关 RPC 端点（wes_startMining/wes_stopMining），false 禁用，私有链默认 true。注意：此字段只控制是否暴露挖矿相关 RPC 端点，不决定节点是否实际在挖矿；挖矿由运行时 API 控制（POST /node/mining），不依赖此配置"
+  },
+  
+  "mining": {
+    "_comment": "挖矿配置：定义 PoW+XOR 共识和出块参数，私有链模式默认单节点（可关闭聚合器）。注意：mining.* 字段是链级共识参数，控制全网出块节奏/是否启用聚合器；不会记录\"哪些节点挖矿\"，也不会影响某个节点是否参与投票",
+    "target_block_time": "5s",
+    "_comment_target_block_time": "目标出块时间：时间字符串，格式 <数字>s，如 5s，私有链通常使用最短的出块时间（3-10 秒）",
+    "enable_aggregator": false,
+    "_comment_enable_aggregator": "启用聚合器：布尔值，true 启用分布式聚合器，false 禁用（单节点模式），私有链模式允许关闭聚合器，仅适用于开发/测试或内部账本场景，默认 false",
+    "max_mining_threads": 2,
+    "_comment_max_mining_threads": "最大挖矿线程数：整数类型，挖矿使用的最大线程数，私有链默认 2",
+    "_comment_v2_gate": "V2 挖矿稳定性门闸配置（2025-12-15 新增）：控制挖矿前置条件（网络法定人数+高度一致性确认），开发环境可适当放宽",
+    "min_network_quorum_total": 2,
+    "_comment_min_network_quorum_total": "最小网络法定人数（含本机）：整数类型，默认 2，开发环境可设为 1（单节点测试）或 2，必须 >= 1",
+    "allow_single_node_mining": true,
+    "_comment_allow_single_node_mining": "是否允许单节点挖矿：布尔值，仅 dev 环境允许 true，必须同时配置 environment=dev + startup_mode=from_genesis",
+    "network_discovery_timeout_seconds": 60,
+    "_comment_network_discovery_timeout_seconds": "网络发现超时（秒）：整数类型，开发环境使用较短超时（60），必须 > 0",
+    "quorum_recovery_timeout_seconds": 180,
+    "_comment_quorum_recovery_timeout_seconds": "法定人数恢复超时（秒）：整数类型，开发环境使用较短超时（180），必须 > 0",
+    "max_height_skew": 10,
+    "_comment_max_height_skew": "最大高度偏差：整数类型（区块数），统一阈值（不区分 initial/runtime），开发环境允许较大偏差（10），必须 >= 0",
+    "max_tip_staleness_seconds": 600,
+    "_comment_max_tip_staleness_seconds": "链尖最大陈旧时间（秒）：整数类型，开发环境使用较长陈旧时间（600），必须 > 0",
+    "enable_tip_freshness_check": false,
+    "_comment_enable_tip_freshness_check": "是否启用链尖新鲜度检查：布尔值，开发环境可关闭，生产环境建议启用",
+    "enable_network_alignment_check": true,
+    "_comment_enable_network_alignment_check": "是否启用网络对齐检查：布尔值，true 启用 V2 挖矿门闸，false 禁用（退回旧行为），开发环境建议启用以验证逻辑"
+  },
+  
+  "blockchain": {
+    "_comment": "区块链配置：定义区块链相关参数",
+    "block": {
+      "_comment": "区块配置：定义区块相关参数",
+      "min_block_interval": 2,
+      "_comment_min_block_interval": "最小出块间隔：整数类型，最小出块间隔（秒），默认 2"
+    }
+  },
+  
+  "node": {
+    "_comment": "节点配置：定义 P2P 网络和节点行为配置，⚠️ 可根据需要修改：配置节点地址和访问控制",
+    "listen_addresses": [
+      "/ip4/127.0.0.1/tcp/28683",
+      "/ip4/127.0.0.1/udp/28683/quic-v1"
+    ],
+    "_comment_listen_addresses": "监听地址列表：字符串数组，libp2p multiaddr 格式，节点监听的网络地址，私有链默认仅监听本地（127.0.0.1），可根据需要修改",
+    "host": {
+      "_comment": "P2P 主机配置：定义 P2P 网络主机的身份和访问控制",
+      "diagnostics_enabled": true,
+      "_comment_diagnostics_enabled": "是否启用诊断 HTTP 服务：布尔值，true 启用诊断端口（用于 pprof / P2P diagnostics 等），false 禁用。⚠️ 仅建议在开发/测试环境启用，生产环境建议保持 false 或通过防火墙限制访问。开发环境默认启用，便于调试和性能分析",
+      "diagnostics_port": 28686,
+      "_comment_diagnostics_port": "诊断 HTTP 端口：整数类型，诊断服务监听端口，默认 28686（WES 端口规范）。启用后可通过 http://127.0.0.1:<diagnostics_port>/debug/pprof/ 访问 pprof 性能分析端点。可通过命令行参数 --diagnostics-port 覆盖（节点级配置，不影响链级配置）",
+      "identity": {
+        "_comment": "身份配置：定义 P2P 节点身份",
+        "key_file": "./p2p/identity.key",
+        "_comment_key_file": "密钥文件路径：字符串，P2P 身份密钥文件路径，相对路径或绝对路径，自动生成到指定路径"
+      },
+      "gater": {
+        "_comment": "接入控制配置：定义 P2P 网络接入控制策略，私有链模式默认仅允许本机连接，可根据需要修改",
+        "mode": "allowlist",
+        "_comment_mode": "接入控制模式：枚举值，固定为 allowlist（白名单），私有链模式默认仅允许本机连接",
+        "allow_cidrs": ["127.0.0.1/32"],
+        "_comment_allow_cidrs": "允许的 CIDR 列表：字符串数组，IP 段白名单（CIDR 格式），私有链默认仅允许本机（127.0.0.1/32），可根据需要修改",
+        "allow_prefixes": ["/ip4/127.0.0.1"],
+        "_comment_allow_prefixes": "允许的前缀列表：字符串数组，libp2p multiaddr 前缀白名单，私有链默认仅允许本机前缀",
+        "deny_cidrs": [],
+        "_comment_deny_cidrs": "拒绝的 CIDR 列表：字符串数组，IP 段黑名单（CIDR 格式），默认空数组",
+        "deny_prefixes": [],
+        "_comment_deny_prefixes": "拒绝的前缀列表：字符串数组，libp2p multiaddr 前缀黑名单，默认空数组"
+      }
+    },
+    "bootstrap_peers": [],
+    "_comment_bootstrap_peers": "引导节点列表：字符串数组，libp2p multiaddr 格式，引导节点地址列表，私有链通常不需要 bootstrap 节点（单节点模式），默认空数组",
+    "enable_mdns": false,
+    "_comment_enable_mdns": "启用 mDNS：布尔值，true 启用本地网络 mDNS 发现，false 禁用，私有链默认 false",
+    "enable_dht": false,
+    "_comment_enable_dht": "启用 DHT：布尔值，true 启用分布式哈希表，false 禁用，私有链通常不需要 DHT（单节点模式），默认 false",
+    "enable_nat_port": false,
+    "_comment_enable_nat_port": "启用 NAT 端口映射：布尔值，true 启用 NAT 端口映射，false 禁用，私有链默认 false",
+    "enable_dcutr": false,
+    "_comment_enable_dcutr": "启用 DCUtR：布尔值，true 启用直接连接 UDP 穿透，false 禁用，私有链默认 false",
+    "enable_auto_relay": false,
+    "_comment_enable_auto_relay": "启用自动中继：布尔值，true 启用自动中继，false 禁用，私有链默认 false",
+    "expected_min_peers": 0,
+    "_comment_expected_min_peers": "期望的最小 DHT peers 数量：整数类型。0 表示单节点/孤立网络模式，不依赖 DHT 发现；多节点私有链环境可按需设置为 2-3。",
+    "single_node_mode": true,
+    "_comment_single_node_mode": "单节点模式开关：布尔值，true 表示明确为单节点/孤立网络，内部会自动关闭 DHT rendezvous 发现循环，降低资源消耗。"
+  },
+  
+  "security": {
+    "_comment": "安全配置：定义链的安全模型和访问控制策略，私有链模式为 PSK + 内网",
+    "access_control": {
+      "_comment": "接入控制配置：定义网络接入控制策略",
+      "mode": "psk",
+      "_comment_mode": "接入控制模式：枚举值，固定为 psk（PSK 加密），PSK + 内网"
+    },
+    "psk": {
+      "_comment": "PSK 配置：定义预共享密钥配置",
+      "file": "./p2p/network.key",
+      "_comment_file": "PSK 文件路径：字符串，PSK 文件路径，相对路径或绝对路径，由工具或运维生成，不建议手工编辑明文密钥"
+    },
+    "permission_model": "private",
+    "_comment_permission_model": "权限模型：枚举值，固定为 private（私有链），推荐仅在内网中部署"
+  }
+}

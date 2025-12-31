@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package pb.network.transport;
+option go_package = "github.com/weisyn/v1/pb/network/transport";
+
+// 通用载体：网络元信息 + 不透明业务载荷
+message Envelope {
+  uint32 version        = 1;
+  string protocol_id    = 2;  // 流式协议ID
+  
+  // 🎯 破坏性重构：Topic 结构化字段（替代原 string topic）
+  // 原 topic 字段已废弃，使用以下结构化字段：
+  // - namespace: 网络命名空间（如 "public-testnet-demo" / "mainnet-public"）
+  // - domain:    协议域（如 "consensus" / "blockchain" / "network"）
+  // - name:      主题名（如 "latest_block" / "tx_announce"）
+  // - version:   版本号（如 "v1" / "v2"）
+  string namespace      = 13; // 网络命名空间（新增）
+  string domain         = 14; // 协议域（新增）
+  string name           = 15; // 主题名（新增）
+  string topic_version  = 16; // 主题版本（新增，避免与 Envelope.version 冲突）
+  
+  // ⚠️ 废弃字段（保留以兼容旧版本，但不应再使用）
+  string topic          = 3;  // [废弃] 订阅主题，使用 namespace/domain/name/topic_version 替代
+  
+  string content_type   = 4;  // e.g. application/pb;type=BlockRange
+  string encoding       = 5;  // "pb" | "json" | "raw"
+  string compression    = 6;  // "none" | "gzip" | "snappy"
+  bytes  payload        = 7;  // 业务负载
+  string correlation_id = 8;  // 请求链路ID
+  string from_peer_id   = 9;
+  uint64 timestamp      = 10; // ms
+  string dedup_key      = 11; // 去重键
+  bytes  signature      = 12; // 签名
+}
+
+// 流式请求
+message RpcRequest {
+  string   request_id = 1; // 唯一请求ID
+  Envelope envelope   = 2; // 业务载荷容器
+}
+
+// 流式响应
+message RpcResponse {
+  enum Status {
+    OK    = 0;
+    ERROR = 1;
+  }
+  string   request_id    = 1;
+  Status   status        = 2;
+  int32    error_code    = 3;   // 协议/业务自定义错误码空间（Network不解释）
+  string   error_message = 4;   // 简述
+  Envelope envelope      = 5;   // 成功时承载回包；错误时可为空
+}
+
+// 心跳
+message Heartbeat {
+  uint64 timestamp = 1; // ms
+}
+
+// 大报文分片（可选）
+message StreamChunk {
+  string request_id = 1;
+  uint32 index      = 2; // 0-based
+  uint32 total      = 3;
+  string compression= 4; // 分片压缩策略（可选）
+  bytes  data       = 5; // 分片数据（可为Envelope序列化字节）
+}

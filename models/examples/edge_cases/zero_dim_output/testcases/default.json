@@ -1,0 +1,41 @@
+{
+  "name": "example_0_dim_output/default",
+  "category": "edge-ok",
+  "kind": "onnx-model",
+  "description": "零维输出模型的基准测试用例（当前 ONNX Runtime 对 Expand + 零维存在已知限制）",
+  "inputs": [
+    {
+      "name": "x",
+      "kind": "tensor",
+      "dtype": "float32",
+      "shape": [2, 8],
+      "field": "data",
+      "values": [
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+      ]
+    }
+  ],
+  "expected_outputs": [
+    {
+      "index": 0,
+      "name": "y",
+      "shape": [2, 0, 8],
+      "dtype": "float32",
+      "match": "shape-only"
+    }
+  ],
+  "chain_expectations": {
+    "resource": {
+      "must_exist": true,
+      "category": "EXECUTABLE",
+      "executable_type": "AIMODEL"
+    }
+  },
+  "notes": [
+    "当输入全为 0 时，理论输出形状为 [2,0,8]；当前 ONNX Runtime 在 Expand + 零维场景下可能抛出 OrtValue shape verification failed 错误。",
+    "`onnx_models_test.sh` 检测到包含 {2,0,8} 的该错误时，将本用例视为 Edge-OK：部署与资源索引链路已验证，零维行为视为 runtime 的已知限制。"
+  ]
+}
+
+

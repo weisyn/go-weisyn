@@ -1,0 +1,134 @@
+{
+  "_comment": "WES 事件系统配置示例",
+  "_description": "本文件展示了事件系统的完整配置选项，包括基础配置和增强功能配置",
+  
+  "basic": {
+    "_comment": "基础事件配置 - 向后兼容的核心配置",
+    "enabled": true,
+    "buffer_size": 1000,
+    "max_workers": 10,
+    "max_subscribers": 1000
+  },
+  
+  "enhanced": {
+    "_comment": "增强功能配置 - 新增的高级功能",
+    "enabled": true,
+    
+    "domain_registry": {
+      "_comment": "域注册中心配置 - 管理事件域的注册和验证",
+      "enabled": true,
+      "strict_domain_check": false,
+      "warn_cross_domain": true,
+      "allow_unregistered_domain": true,
+      "max_domains": 100,
+      "default_ttl": "24h"
+    },
+    
+    "event_router": {
+      "_comment": "智能事件路由器配置 - 提供高级路由策略",
+      "enabled": true,
+      "default_strategy": "broadcast",
+      "max_concurrent_routes": 50,
+      "route_timeout": "30s",
+      "enable_priority_queue": true,
+      "max_queue_size": 10000,
+      "worker_pool_size": 20,
+      "enable_metrics": true
+    },
+    
+    "event_validator": {
+      "_comment": "事件验证器配置 - 确保事件数据质量",
+      "enabled": true,
+      "strict_mode": false,
+      "validate_event_name": true,
+      "validate_event_data": true,
+      "validation_timeout": "5s",
+      "max_validation_rules": 50,
+      "enable_batch_validation": true,
+      "cache_validation_results": true
+    },
+    
+    "event_coordinator": {
+      "_comment": "事件协调器配置 - 统一管理和协调事件系统",
+      "enabled": true,
+      "max_concurrent_events": 100,
+      "event_timeout": "60s",
+      "health_check_interval": "30s",
+      "metrics_interval": "10s",
+      "enable_circuit_breaker": true,
+      "circuit_breaker_threshold": 10,
+      "enable_graceful_shutdown": true,
+      "graceful_shutdown_timeout": "30s"
+    }
+  },
+  
+  "_scenarios": {
+    "_comment": "不同场景下的推荐配置",
+    
+    "development": {
+      "_comment": "开发环境配置 - 宽松的验证，详细的日志",
+      "enhanced.domain_registry.strict_domain_check": false,
+      "enhanced.domain_registry.allow_unregistered_domain": true,
+      "enhanced.event_validator.strict_mode": false,
+      "enhanced.event_router.enable_metrics": true
+    },
+    
+    "testing": {
+      "_comment": "测试环境配置 - 中等严格的验证，性能监控",
+      "enhanced.domain_registry.strict_domain_check": true,
+      "enhanced.domain_registry.allow_unregistered_domain": false,
+      "enhanced.event_validator.strict_mode": false,
+      "enhanced.event_router.enable_metrics": true
+    },
+    
+    "production": {
+      "_comment": "生产环境配置 - 严格验证，高性能，可靠性优先",
+      "enhanced.domain_registry.strict_domain_check": true,
+      "enhanced.domain_registry.allow_unregistered_domain": false,
+      "enhanced.event_validator.strict_mode": true,
+      "enhanced.event_coordinator.enable_circuit_breaker": true,
+      "buffer_size": 5000,
+      "max_workers": 20,
+      "enhanced.event_router.max_concurrent_routes": 100,
+      "enhanced.event_router.worker_pool_size": 50,
+      "enhanced.event_coordinator.max_concurrent_events": 500
+    },
+    
+    "high_throughput": {
+      "_comment": "高吞吐量配置 - 性能优先，适度牺牲验证严格性",
+      "buffer_size": 10000,
+      "max_workers": 50,
+      "enhanced.event_router.max_concurrent_routes": 200,
+      "enhanced.event_router.max_queue_size": 50000,
+      "enhanced.event_router.worker_pool_size": 100,
+      "enhanced.event_validator.enable_batch_validation": true,
+      "enhanced.event_validator.cache_validation_results": true,
+      "enhanced.event_coordinator.max_concurrent_events": 1000
+    }
+  },
+  
+  "_feature_toggles": {
+    "_comment": "功能开关示例 - 可以选择性启用/禁用功能",
+    
+    "minimal_mode": {
+      "_comment": "最小模式 - 只启用基础功能",
+      "enhanced.enabled": false
+    },
+    
+    "validation_only": {
+      "_comment": "仅验证模式 - 只启用验证功能",
+      "enhanced.domain_registry.enabled": false,
+      "enhanced.event_router.enabled": false,
+      "enhanced.event_validator.enabled": true,
+      "enhanced.event_coordinator.enabled": false
+    },
+    
+    "routing_only": {
+      "_comment": "仅路由模式 - 只启用路由功能",
+      "enhanced.domain_registry.enabled": false,
+      "enhanced.event_router.enabled": true,
+      "enhanced.event_validator.enabled": false,
+      "enhanced.event_coordinator.enabled": false
+    }
+  }
+}

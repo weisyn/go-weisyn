@@ -1,0 +1,16 @@
+{
+  "name": "Hello World 基础测试",
+  "description": "测试 Hello World 合约的基本功能",
+  "testcases": [
+    {
+      "name": "调用 SayHello",
+      "method": "SayHello",
+      "params": {},
+      "expected": {
+        "status": "success",
+        "return_data": "Hello, World!"
+      }
+    }
+  ]
+}
+

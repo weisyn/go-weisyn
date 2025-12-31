@@ -22,50 +22,69 @@ help: ## 显示帮助信息
 	@echo "📋 可用命令:"
 	@awk 'BEGIN {FS = ":.*##"; printf ""} /^[a-zA-Z_0-9-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
-##@ Environment-Specific Build (环境专用构建)
+##@ Build (构建)
 
-build-all: ## 构建所有环境的二进制文件
-	@echo "🏗️  构建所有环境二进制文件..."
-	@./scripts/build/build-all-envs.sh
-
-build-dev: ## 仅构建开发环境二进制文件
-	@echo "🔧 构建开发环境二进制文件..."
-	@bash scripts/build/ensure_onnx_libs.sh
+build-node: ## 构建节点二进制文件
+	@echo "🏗️  构建 weisyn-node..."
+	@bash scripts/build/ensure_onnx_libs.sh || echo "⚠️  ONNX 库下载失败，将使用 stub 实现（AI 推理功能不可用）"
 	@mkdir -p bin
-	@go build -ldflags "$(BASE_LDFLAGS)" -o bin/weisyn-development ./cmd/weisyn
-	@chmod +x bin/weisyn-development
-	@echo "✅ bin/weisyn-development 构建完成（使用 --env development 指定环境）"
+	@go build -ldflags "$(BASE_LDFLAGS)" -o bin/weisyn-node ./cmd/node
+	@chmod +x bin/weisyn-node
+	@echo "✅ bin/weisyn-node 构建完成"
 
-build-test: ## 仅构建测试环境二进制文件
-	@echo "🧪 构建测试环境二进制文件..."
-	@bash scripts/build/ensure_onnx_libs.sh
+build-cli: ## 构建CLI客户端
+	@echo "🔧 构建 weisyn-cli..."
 	@mkdir -p bin
-	@go build -ldflags "$(BASE_LDFLAGS)" -o bin/weisyn-testing ./cmd/weisyn
-	@chmod +x bin/weisyn-testing
-	@echo "✅ bin/weisyn-testing 构建完成（使用 --env testing 指定环境）"
+	@go build -ldflags "$(BASE_LDFLAGS)" -o bin/weisyn-cli ./cmd/cli
+	@chmod +x bin/weisyn-cli
+	@echo "✅ bin/weisyn-cli 构建完成"
 
-build-prod: ## 仅构建生产环境二进制文件
-	@echo "🚀 构建生产环境二进制文件..."
-	@bash scripts/build/ensure_onnx_libs.sh
+build-launcher: ## 构建可视化启动器（weisyn）
+	@echo "🖥️  构建 weisyn（可视化启动器）..."
 	@mkdir -p bin
-	@go build -ldflags "$(BASE_LDFLAGS)" -o bin/weisyn-production ./cmd/weisyn
-	@chmod +x bin/weisyn-production
-	@echo "✅ bin/weisyn-production 构建完成（使用 --env production 指定环境）"
+	@go build -ldflags "$(BASE_LDFLAGS)" -o bin/weisyn ./cmd/weisyn
+	@chmod +x bin/weisyn
+	@echo "✅ bin/weisyn 构建完成"
+
+build-tools: ## 构建所有工具
+	@echo "🛠️  构建所有工具..."
+	@mkdir -p bin
+	@go build -ldflags "$(BASE_LDFLAGS)" -o bin/wes-cleanup ./cmd/tools/cleanup
+	@go build -ldflags "$(BASE_LDFLAGS)" -o bin/wes-keygen ./cmd/tools/keygen
+	@go build -ldflags "$(BASE_LDFLAGS)" -o bin/wes-param-encoder ./cmd/tools/param-encoder
+	@chmod +x bin/wes-*
+	@echo "✅ 所有工具构建完成"
+
+build-all: build-node build-cli build-launcher build-tools ## 构建所有二进制文件（节点 + CLI + 启动器 + 工具）
+
+##@ Legacy Build (旧版构建 - 向后兼容)
+
+build-dev: ## 仅构建开发环境二进制文件（已废弃，使用 build-node）
+	@echo "⚠️  已废弃，请使用: make build-node"
+	@echo "💡 新用法: ./bin/weisyn-node --chain public --env dev"
+
+build-test: ## 仅构建测试环境二进制文件（已废弃，使用 build-node）
+	@echo "⚠️  已废弃，请使用: make build-node"
+	@echo "💡 新用法: ./bin/weisyn-node --chain public --env test"
+
+build-prod: ## 仅构建生产环境二进制文件（已废弃，使用 build-node）
+	@echo "⚠️  已废弃，请使用: make build-node"
+	@echo "💡 新用法: ./bin/weisyn-node --chain public --env prod"
 
 
 ##@ Development (开发相关)
 
-run-dev: build-dev ## 构建并运行开发环境
-	@echo "🔧 启动开发环境..."
-	@./bin/weisyn-development --env development
+run-dev: build-node ## 构建并运行开发环境（公链模式）
+	@echo "🔧 启动开发环境（公链模式）..."
+	@./bin/weisyn-node --chain public --env dev
 
-run-test: build-test ## 构建并运行测试环境
-	@echo "🧪 启动测试环境..."
-	@./bin/weisyn-testing --env testing --daemon
+run-test: build-node ## 构建并运行测试环境（公链模式）
+	@echo "🧪 启动测试环境（公链模式）..."
+	@./bin/weisyn-node --chain public --env test
 
-run-prod: build-prod ## 构建并运行生产环境（仅API模式）
-	@echo "🚀 启动生产环境（API模式）..."
-	@./bin/weisyn-production --env production --daemon
+run-prod: build-node ## 构建并运行生产环境（公链模式）
+	@echo "🚀 启动生产环境（公链模式）..."
+	@./bin/weisyn-node --chain public --env prod
 
 ##@ Quality Assurance (质量保证)
 
@@ -194,7 +213,7 @@ deps-update: ## 更新依赖
 
 clean: ## 清理构建产物
 	@echo "🧹 清理构建产物..."
-	@rm -f bin/weisyn-development bin/weisyn-testing bin/weisyn-production bin/development bin/testing bin/production
+	@rm -f bin/weisyn-node bin/weisyn-cli bin/wes-* bin/weisyn-development bin/weisyn-testing bin/weisyn-production bin/development bin/testing bin/production bin/wes
 	@echo "✅ 清理完成"
 
 clean-all: clean ## 清理所有生成文件
@@ -205,15 +224,15 @@ clean-all: clean ## 清理所有生成文件
 
 clean-data: ## 清理区块链数据（交互式）
 	@echo "🗑️  清理区块链数据..."
-	@go run ./cmd/cleanup
+	@go run ./cmd/tools/cleanup
 
 clean-data-preview: ## 预览要删除的数据文件
 	@echo "🔍 预览数据清理..."
-	@go run ./cmd/cleanup --dry-run
+	@go run ./cmd/tools/cleanup --dry-run
 
 clean-data-force: ## 强制清理数据（无确认）
 	@echo "⚠️ 强制清理区块链数据..."
-	@go run ./cmd/cleanup --yes
+	@go run ./cmd/tools/cleanup --yes
 
 version: ## 显示版本信息
 	@echo "WES 构建信息:"
@@ -244,6 +263,42 @@ uninstall: ## 卸载系统中的二进制文件
 	@sudo rm -f /usr/local/bin/weisyn-development /usr/local/bin/weisyn-testing /usr/local/bin/weisyn-production
 	@echo "✅ 卸载完成"
 
+##@ Release Build (发布构建)
+
+release: ## 构建当前平台发布版本
+	@echo "🚀 构建当前平台发布版本..."
+	@./scripts/build/release-build.sh
+
+release-version: ## 构建指定版本 (用法: make release-version VERSION=v1.0.0)
+	@if [ -z "$(VERSION)" ]; then \
+		echo "❌ 请指定版本号: make release-version VERSION=v1.0.0"; \
+		exit 1; \
+	fi
+	@echo "🚀 构建版本 $(VERSION)..."
+	@./scripts/build/release-build.sh -v $(VERSION)
+
+release-all: ## 构建所有平台发布版本 (用法: make release-all VERSION=v1.0.0)
+	@if [ -z "$(VERSION)" ]; then \
+		echo "❌ 请指定版本号: make release-all VERSION=v1.0.0"; \
+		exit 1; \
+	fi
+	@echo "🚀 构建所有平台版本 $(VERSION)..."
+	@./scripts/build/release-build.sh --all -v $(VERSION)
+
+release-darwin: ## 构建 macOS 平台 (用法: make release-darwin VERSION=v1.0.0)
+	@./scripts/build/release-build.sh -p darwin -v $(VERSION)
+
+release-linux: ## 构建 Linux 平台 (用法: make release-linux VERSION=v1.0.0)
+	@./scripts/build/release-build.sh -p linux -v $(VERSION)
+
+release-windows: ## 构建 Windows 平台 (用法: make release-windows VERSION=v1.0.0)
+	@./scripts/build/release-build.sh -p windows -v $(VERSION)
+
+clean-dist: ## 清理发布构建产物
+	@echo "🧹 清理发布构建产物..."
+	@rm -rf dist/
+	@echo "✅ 清理完成"
+
 ##@ Docker (容器化)
 
 docker-build: ## 构建Docker镜像
@@ -252,7 +307,7 @@ docker-build: ## 构建Docker镜像
 
 docker-run: docker-build ## 运行Docker容器
 	@echo "🐳 运行Docker容器..."
-	@docker run -p 8080:8080 weisyn:latest
+	@docker run -p 28680:28680 weisyn:latest
 
 ##@ Examples (示例)
 

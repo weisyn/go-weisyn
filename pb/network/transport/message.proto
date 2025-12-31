@@ -1,0 +1,88 @@
+syntax = "proto3";
+package pb.network.transport;
+
+option go_package = "github.com/weisyn/v1/pb/network/transport";
+
+import "pb/network/transport/node.proto"; // 导入节点相关定义
+
+// P2PMessage P2P网络基础消息包装器
+message P2PMessage {
+  // MessageType 定义基础P2P网络消息类型
+  enum MessageType {
+    UNKNOWN = 0;
+    HANDSHAKE_REQUEST = 1;   // 握手请求
+    HANDSHAKE_RESPONSE = 2;  // 握手响应
+    PING = 3;                // Ping消息
+    PONG = 4;                // Pong消息
+    DISCONNECT = 5;          // 断开连接消息
+    PEERS_REQUEST = 6;       // 节点请求
+    PEERS_RESPONSE = 7;      // 节点响应
+    APPLICATION = 8;         // 应用层消息(由高层协议处理)
+  }
+
+  MessageType type = 1;             // 消息类型
+  string message_id = 2;            // 消息ID
+  uint64 timestamp = 3;             // 时间戳
+  bytes payload = 4;                // 消息载荷
+  bytes signature = 5;              // 可选签名
+}
+
+// 握手相关消息
+
+// HandshakeRequest 握手请求
+message HandshakeRequest {
+  string peer_id = 1;            // 节点ID (base58编码的libp2p peer.ID)
+  string version = 2;            // 协议版本
+  NodeCapabilities capabilities = 3; // 节点能力(使用node.proto中定义的类型)
+  bytes network_id = 4;          // 网络ID
+  repeated string listen_addresses = 5; // 监听地址列表 (multiaddr格式)
+}
+
+// HandshakeResponse 握手响应
+message HandshakeResponse {
+  bool accept = 1;               // 是否接受连接
+  string reason = 2;             // 拒绝原因(如果不接受)
+  repeated string peers = 3;     // 推荐节点列表 (multiaddr格式，包含peer ID)
+}
+
+// 连接维护消息
+
+// Ping 消息
+message Ping {
+  uint64 timestamp = 1;         // 时间戳
+}
+
+// Pong 消息
+message Pong {
+  uint64 timestamp = 1;         // 时间戳
+  uint64 original_timestamp = 2; // 原始Ping的时间戳
+}
+
+// DisconnectMessage 断开连接消息
+message DisconnectMessage {
+  enum DisconnectReason {
+    UNKNOWN = 0;
+    NORMAL_CLOSURE = 1;      // 正常关闭
+    PROTOCOL_BREACH = 2;     // 协议违规
+    USELESS_PEER = 3;        // 无用节点
+    TOO_MANY_PEERS = 4;      // 节点过多
+    DIFFERENT_NETWORK = 5;   // 不同的网络
+    INCOMPATIBLE_VERSION = 6; // 不兼容的版本
+    CLIENT_QUITTING = 7;     // 客户端退出
+  }
+  DisconnectReason reason = 1; // 断开原因
+  string message = 2;          // 附加消息
+}
+
+// 节点发现消息
+
+// PeersRequestMessage 节点请求消息
+message PeersRequestMessage {
+  uint32 max_peers = 1;         // 最大返回节点数
+  repeated string requested_roles = 2; // 请求特定角色的节点
+}
+
+// PeersResponseMessage 节点响应消息
+message PeersResponseMessage {
+  repeated PeerInfo peers = 1;  // 节点信息列表(使用node.proto中定义的PeerInfo类型)
+} 

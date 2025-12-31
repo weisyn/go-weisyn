@@ -1,0 +1,55 @@
+{
+  "name": "example_multitype/default",
+  "category": "strict-pass",
+  "kind": "onnx-model",
+  "description": "多数据类型模型的基准测试用例（uint8 + float64 输入）",
+  "inputs": [
+    {
+      "name": "InputA",
+      "kind": "tensor",
+      "dtype": "uint8",
+      "shape": [1, 1, 1],
+      "field": "uint8_data",
+      "values": [128]
+    },
+    {
+      "name": "InputB",
+      "kind": "tensor",
+      "dtype": "float64",
+      "shape": [1, 2, 2],
+      "field": "data",
+      "values": [1.0, 2.0, 3.0, 4.0]
+    }
+  ],
+  "expected_outputs": [
+    {
+      "index": 0,
+      "name": "OutputA",
+      "shape": [1, 2, 2],
+      "dtype": "int16",
+      "sample": [-384, -256, -128, 0],
+      "match": "prefix"
+    },
+    {
+      "index": 1,
+      "name": "OutputB",
+      "shape": [1, 1, 1],
+      "dtype": "int64",
+      "sample": [157952],
+      "match": "exact"
+    }
+  ],
+  "chain_expectations": {
+    "resource": {
+      "must_exist": true,
+      "category": "EXECUTABLE",
+      "executable_type": "AIMODEL"
+    }
+  },
+  "notes": [
+    "InputA 使用 uint8_data 字段，InputB 使用 data 字段并指定 float64。",
+    "OutputA 为 int16 张量，OutputB 为 int64 张量；测试脚本会检查形状和数据类型，并对 sample 做前缀 / 全量断言。"
+  ]
+}
+
+
